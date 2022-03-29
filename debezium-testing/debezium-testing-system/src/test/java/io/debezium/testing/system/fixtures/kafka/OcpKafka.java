@@ -56,7 +56,6 @@ public interface OcpKafka extends KafkaSetupFixture, KafkaRuntimeFixture, OcpCli
                 .withOcpClient(ocp)
                 .withHttpClient(new OkHttpClient())
                 .withProject(ConfigProperties.OCP_PROJECT_DBZ)
-                .withYamlPath(KAFKA)
                 .withOperatorController(operatorController)
                 .build();
 
