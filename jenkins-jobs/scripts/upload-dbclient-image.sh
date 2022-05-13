@@ -20,15 +20,17 @@ while true; do
   esac
 done
 
-if [ ${PRINT_HELP} = true ]; then
+if [ ${PRINT_HELP} == true ]; then
   echo "TODO create help"
 fi
 
 pushd "${INSTALL_SOURCE_DIR}" || exit 1
 
 docker login -u "${DEST_LOGIN}" -p "${DEST_PASS}" "${REGISTRY}"
-docker build -t "${IMAGE_NAME}:${TAG}"
+
+docker build -t tooling ./tooling
+docker build -t "${IMAGE_NAME}:${TAG}" ./db-client
 
 target="${REGISTRY}/${ORGANISATION}/${IMAGE_NAME}:${TAG}"
-
+docker tag "${IMAGE_NAME}" "$target"
 docker push "$target"

@@ -29,20 +29,22 @@ pipeline {
         }
 
         stage('Push') {
-            withCredentials([
-                usernamePassword(credentialsId: "${QUAY_CREDENTIALS}", usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD'),
-            ]) {
-                sh '''
-                set -x
-                dir=$(realpath ${WORKSPACE}/docker-images/docker-images/dbclient)
-                cd "${WORKSPACE}/debezium"
-                ./jenkins-jobs/scripts/upload-dbclient-image.sh                           \\
-                    --dir="${dir}"                                              \\
-                    --image-name="dbclient"                                     \\
-                    --registry="quay.io" --organisation="${QUAY_ORGANISATION}"  \\
-                    --dest-login="${QUAY_USERNAME}"                             \\
-                    --dest-pass="${QUAY_PASSWORD}"
-                '''
+            steps {
+                withCredentials([
+                    usernamePassword(credentialsId: "${QUAY_CREDENTIALS}", usernameVariable: 'QUAY_USERNAME', passwordVariable: 'QUAY_PASSWORD'),
+                ]) {
+                    sh '''
+                    set -x
+                    dir=$(realpath ${WORKSPACE}/docker-images)
+                    cd "${WORKSPACE}/debezium"
+                    ./jenkins-jobs/scripts/upload-dbclient-image.sh                           \\
+                        --dir="${dir}"                                              \\
+                        --image-name="dbclient"                                     \\
+                        --registry="quay.io" --organisation="${QUAY_ORGANISATION}"  \\
+                        --dest-login="${QUAY_USERNAME}"                             \\
+                        --dest-pass="${QUAY_PASSWORD}"
+                    '''
+                }
             }
         }
     }
