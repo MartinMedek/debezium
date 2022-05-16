@@ -1,4 +1,5 @@
 #!/bin/bash
+PRINT_HELP=false
 IMAGE_NAME="dbz-db-tooling"
 TAG="latest"
 OPTS=$(getopt -o d:i:r:o:t: --long dir:,image-name:,registry:,organisation:,dest-login:,dest-pass:,tag: -n 'parse-options' -- "$@")
@@ -26,14 +27,11 @@ fi
 
 pushd "${INSTALL_SOURCE_DIR}" || exit 1
 
-docker login -u "${DEST_LOGIN}" -p "${DEST_PASS}" "${REGISTRY}"
+target="${REGISTRY}/${ORGANISATION}/${IMAGE_NAME}:${TAG}"
 
-docker build -t "${IMAGE_NAME}:${TAG}" ./db-client
-
-target="${REGISTRY}/${ORGANISATION}/dbz-db-tooling:${TAG}"
-docker tag "${IMAGE_NAME}" "${target}"
-
+docker build -t "${target}" ./db-client
 echo "target: ${target}"
 
 docker images
+docker login -u "${DEST_LOGIN}" -p "${DEST_PASS}" "${REGISTRY}"
 docker push "${target}"

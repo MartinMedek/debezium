@@ -39,7 +39,6 @@ pipeline {
                     cd "${WORKSPACE}/debezium"
                     ./jenkins-jobs/scripts/upload-dbclient-image.sh                           \\
                         --dir="${dir}"                                              \\
-                        --image-name="dbclient"                                     \\
                         --registry="quay.io" --organisation="${QUAY_ORGANISATION}"  \\
                         --dest-login="${QUAY_USERNAME}"                             \\
                         --dest-pass="${QUAY_PASSWORD}"
