@@ -1,5 +1,5 @@
 #!/bin/bash
-IMAGE_NAME="dbclient"
+IMAGE_NAME="dbz-db-tooling"
 TAG="latest"
 OPTS=$(getopt -o d:i:r:o:t: --long dir:,image-name:,registry:,organisation:,dest-login:,dest-pass:,tag: -n 'parse-options' -- "$@")
 if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
@@ -28,9 +28,8 @@ pushd "${INSTALL_SOURCE_DIR}" || exit 1
 
 docker login -u "${DEST_LOGIN}" -p "${DEST_PASS}" "${REGISTRY}"
 
-docker build -t tooling ./tooling
 docker build -t "${IMAGE_NAME}:${TAG}" ./db-client
 
-target="${REGISTRY}/${ORGANISATION}/${IMAGE_NAME}:${TAG}"
-docker tag "${IMAGE_NAME}" "$target"
-docker push "$target"
+target="${REGISTRY}/${ORGANISATION}/dbz-db-tooling:${TAG}"
+docker tag "${IMAGE_NAME}" "${target}"
+docker push "${target}"
