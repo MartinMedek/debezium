@@ -32,4 +32,8 @@ docker build -t "${IMAGE_NAME}:${TAG}" ./db-client
 
 target="${REGISTRY}/${ORGANISATION}/dbz-db-tooling:${TAG}"
 docker tag "${IMAGE_NAME}" "${target}"
+
+echo "target: ${target}"
+
+docker images
 docker push "${target}"
