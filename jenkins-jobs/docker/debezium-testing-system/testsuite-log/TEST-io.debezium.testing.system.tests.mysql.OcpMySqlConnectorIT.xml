@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-failsafe-plugin/xsd/failsafe-test-report-3.0.xsd" version="3.0" name="io.debezium.testing.system.tests.mysql.OcpMySqlConnectorIT" time="335.706" tests="1" errors="1" skipped="0" failures="0">
+  <properties>
+    <property name="test.database.mongo.host" value=""/>
+    <property name="test.docker.image.sqlserver" value="mcr.microsoft.com/mssql/server:2019-latest"/>
+    <property name="java.specification.version" value="17"/>
+    <property name="test.database.postgresql.username" value="debezium"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="test.strimzi.kc.log.level.dbz" value="DEBUG"/>
+    <property name="test.database.mysql.port" value="3306"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="test.database.oracle.username" value="debezium"/>
+    <property name="ocp.project.debezium" value="debezium-test"/>
+    <property name="version.kafka" value="2.7.0"/>
+    <property name="java.vendor.url" value="https://www.redhat.com/"/>
+    <property name="test.database.postgresql.host" value=""/>
+    <property name="test.database.oracle" value=""/>
+    <property name="test.database.oracle.dbz.password" value="dbz"/>
+    <property name="test.ocp.project.postgresql" value="debezium-test-postgresql"/>
+    <property name="test.database.postgresql.dbz.password" value="debezium"/>
+    <property name="sun.boot.library.path" value="/usr/lib/jvm/java-17-openjdk-17.0.3.0.6-2.el8_5.x86_64/lib"/>
+    <property name="test.database.mysql.host" value=""/>
+    <property name="test.database.oracle.pdbname" value="ORCLPDB1"/>
+    <property name="test.docker.image.mongo" value="quay.io/debezium/example-mongodb:latest"/>
+    <property name="sun.java.command" value="/home/jboss/debezium/debezium-testing/debezium-testing-system/target/surefire/surefirebooter17246450720562924141.jar /home/jboss/debezium/debezium-testing/debezium-testing-system/target/surefire 2022-05-17T09-59-40_302-jvmRun1 surefire4769754583844542414tmp surefire_04455606755731799635tmp"/>
+    <property name="test.ocp.project.mongo" value="debezium-test-mongo"/>
+    <property name="jdk.debug" value="release"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="test.as.apicurio.version" value="2.2.0.Final"/>
+    <property name="java.version.date" value="2022-04-19"/>
+    <property name="java.home" value="/usr/lib/jvm/java-17-openjdk-17.0.3.0.6-2.el8_5.x86_64"/>
+    <property name="test.database.mysql.dbz.username" value="debezium"/>
+    <property name="file.separator" value="/"/>
+    <property name="test.database.postgresql.dbname" value="debezium"/>
+    <property name="basedir" value="/home/jboss/debezium/debezium-testing/debezium-testing-system"/>
+    <property name="java.vm.compressedOopsMode" value="Zero based"/>
+    <property name="test.ocp.project.debezium" value="debezium-test"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="ocp.project.mysql" value="debezium-test-mysql"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="ocp.project.postgresql" value="debezium-test-postgresql"/>
+    <property name="test.database.mysql.password" value="mysqlpw"/>
+    <property name="test.as.url" value="http://debezium-artifact-server.debezium-test.svc.cluster.local:8080"/>
+    <property name="ocp.password" value="BlueSlon42"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="test.as.debezium.version" value="2.0.0-SNAPSHOT"/>
+    <property name="java.runtime.version" value="17.0.3+6-LTS"/>
+    <property name="user.name" value="root"/>
+    <property name="test.database.mongo.dbz.username" value="debezium"/>
+    <property name="test.wait.scale" value="1"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="test.database.mysql.dbz.password" value="dbz"/>
+    <property name="test.database.db2.dbz.password" value="=Password!"/>
+    <property name="java.vendor.version" value="21.9"/>
+    <property name="test.database.db2.host" value=""/>
+    <property name="test.database.db2.password" value="=Password!"/>
+    <property name="ocp.project.db2" value="debezium-test-db2"/>
+    <property name="test.docker.image.db2" value="quay.io/rh_integration/dbz-db2-cdc:latest"/>
+    <property name="localRepository" value="/root/.m2/repository"/>
+    <property name="java.io.tmpdir" value="/tmp"/>
+    <property name="test.artifact.server.url" value="http://debezium-artifact-server.debezium-test.svc.cluster.local:8080"/>
+    <property name="java.version" value="17.0.3"/>
+    <property name="test.strimzi.version.kafka" value="2.7.0"/>
+    <property name="ocp.username" value="debezium"/>
+    <property name="test.database.postgresql.dbz.username" value="debezium"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="test.ocp.username" value="debezium"/>
+    <property name="test.ocp.project.sqlserver" value="debezium-test-sqlserver"/>
+    <property name="test.database.mongo.port" value="27017"/>
+    <property name="test.docker.image.kc" value=""/>
+    <property name="native.encoding" value="UTF-8"/>
+    <property name="test.database.oracle.dbname" value="ORCLCDB"/>
+    <property name="java.library.path" value="/usr/java/packages/lib:/usr/lib64:/lib64:/lib:/usr/lib"/>
+    <property name="test.docker.image.postgresql" value="quay.io/debezium/example-postgres:latest"/>
+    <property name="java.vendor" value="Red Hat, Inc."/>
+    <property name="test.ocp.url" value="https://api.cluster.dbz.cechacek.net:6443"/>
+    <property name="test.database.oracle.password" value="dbz"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
+    <property name="test.ocp.pull.secret.paths" value=""/>
+    <property name="test.database.db2.dbz.username" value="db2inst1"/>
+    <property name="test.ocp.password" value="BlueSlon42"/>
+    <property name="java.class.path" value="/home/jboss/debezium/debezium-testing/debezium-testing-system/target/test-classes:/home/jboss/debezium/debezium-testing/debezium-testing-system/target/debezium-testing-system-2.0.0-SNAPSHOT.jar:/root/.m2/repository/io/fabric8/openshift-client/5.12.1/openshift-client-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-client/5.12.1/kubernetes-client-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-rbac/5.12.1/kubernetes-model-rbac-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-admissionregistration/5.12.1/kubernetes-model-admissionregistration-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-apps/5.12.1/kubernetes-model-apps-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-autoscaling/5.12.1/kubernetes-model-autoscaling-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-batch/5.12.1/kubernetes-model-batch-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-certificates/5.12.1/kubernetes-model-certificates-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-coordination/5.12.1/kubernetes-model-coordination-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-discovery/5.12.1/kubernetes-model-discovery-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-events/5.12.1/kubernetes-model-events-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-extensions/5.12.1/kubernetes-model-extensions-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-flowcontrol/5.12.1/kubernetes-model-flowcontrol-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-metrics/5.12.1/kubernetes-model-metrics-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-policy/5.12.1/kubernetes-model-policy-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-scheduling/5.12.1/kubernetes-model-scheduling-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-storageclass/5.12.1/kubernetes-model-storageclass-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-node/5.12.1/kubernetes-model-node-5.12.1.jar:/root/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.13.2/jackson-datatype-jsr310-2.13.2.jar:/root/.m2/repository/io/fabric8/zjsonpatch/0.3.0/zjsonpatch-0.3.0.jar:/root/.m2/repository/com/github/mifmif/generex/1.0.2/generex-1.0.2.jar:/root/.m2/repository/dk/brics/automaton/automaton/1.11-8/automaton-1.11-8.jar:/root/.m2/repository/io/fabric8/openshift-model/5.12.1/openshift-model-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-clusterautoscaling/5.12.1/openshift-model-clusterautoscaling-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-operator/5.12.1/openshift-model-operator-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-operatorhub/5.12.1/openshift-model-operatorhub-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-machine/5.12.1/openshift-model-machine-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-whereabouts/5.12.1/openshift-model-whereabouts-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-monitoring/5.12.1/openshift-model-monitoring-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-storageversionmigrator/5.12.1/openshift-model-storageversionmigrator-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-tuned/5.12.1/openshift-model-tuned-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-console/5.12.1/openshift-model-console-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-machineconfig/5.12.1/openshift-model-machineconfig-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-miscellaneous/5.12.1/openshift-model-miscellaneous-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-hive/5.12.1/openshift-model-hive-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-installer/5.12.1/openshift-model-installer-5.12.1.jar:/root/.m2/repository/commons-codec/commons-codec/1.14/commons-codec-1.14.jar:/root/.m2/repository/org/apache/commons/commons-compress/1.21/commons-compress-1.21.jar:/root/.m2/repository/org/apache/kafka/kafka-clients/2.7.0/kafka-clients-2.7.0.jar:/root/.m2/repository/com/github/luben/zstd-jni/1.4.5-6/zstd-jni-1.4.5-6.jar:/root/.m2/repository/org/lz4/lz4-java/1.7.1/lz4-java-1.7.1.jar:/root/.m2/repository/org/xerial/snappy/snappy-java/1.1.7.7/snappy-java-1.1.7.7.jar:/root/.m2/repository/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar:/root/.m2/repository/io/strimzi/api/0.28.0/api-0.28.0.jar:/root/.m2/repository/io/fabric8/kubernetes-model-core/5.12.1/kubernetes-model-core-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-networking/5.12.1/kubernetes-model-networking-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-common/5.12.1/kubernetes-model-common-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-apiextensions/5.12.1/kubernetes-model-apiextensions-5.12.1.jar:/root/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.2/jackson-dataformat-yaml-2.13.2.jar:/root/.m2/repository/org/yaml/snakeyaml/1.30/snakeyaml-1.30.jar:/root/.m2/repository/io/vertx/vertx-core/4.2.4/vertx-core-4.2.4.jar:/root/.m2/repository/io/netty/netty-common/4.1.68.Final/netty-common-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-buffer/4.1.68.Final/netty-buffer-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-transport/4.1.68.Final/netty-transport-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-handler/4.1.68.Final/netty-handler-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-codec/4.1.68.Final/netty-codec-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-handler-proxy/4.1.68.Final/netty-handler-proxy-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-codec-socks/4.1.68.Final/netty-codec-socks-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-codec-http/4.1.73.Final/netty-codec-http-4.1.73.Final.jar:/root/.m2/repository/io/netty/netty-codec-http2/4.1.68.Final/netty-codec-http2-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-resolver/4.1.68.Final/netty-resolver-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-resolver-dns/4.1.73.Final/netty-resolver-dns-4.1.73.Final.jar:/root/.m2/repository/io/netty/netty-codec-dns/4.1.73.Final/netty-codec-dns-4.1.73.Final.jar:/root/.m2/repository/io/apicurio/apicurio-registry-operator-api-model/2.2.0.Final/apicurio-registry-operator-api-model-2.2.0.Final.jar:/root/.m2/repository/org/projectlombok/lombok/1.18.22/lombok-1.18.22.jar:/root/.m2/repository/com/squareup/okhttp3/okhttp/4.8.1/okhttp-4.8.1.jar:/root/.m2/repository/com/squareup/okio/okio/2.7.0/okio-2.7.0.jar:/root/.m2/repository/com/squareup/okhttp3/logging-interceptor/4.8.1/logging-interceptor-4.8.1.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.13.2/jackson-core-2.13.2.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.13.2.2/jackson-databind-2.13.2.2.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.13.2/jackson-annotations-2.13.2.jar:/root/.m2/repository/org/junit/jupiter/junit-jupiter/5.7.2/junit-jupiter-5.7.2.jar:/root/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.7.2/junit-jupiter-api-5.7.2.jar:/root/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/root/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/root/.m2/repository/org/junit/platform/junit-platform-commons/1.7.2/junit-platform-commons-1.7.2.jar:/root/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.7.2/junit-jupiter-params-5.7.2.jar:/root/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.7.2/junit-jupiter-engine-5.7.2.jar:/root/.m2/repository/org/junit/platform/junit-platform-engine/1.7.2/junit-platform-engine-1.7.2.jar:/root/.m2/repository/org/assertj/assertj-core/3.11.1/assertj-core-3.11.1.jar:/root/.m2/repository/io/github/jcechace/fixture5/0.1.0/fixture5-0.1.0.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.6.10/kotlin-stdlib-jdk8-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.6.10/kotlin-stdlib-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.10/kotlin-stdlib-common-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.6.10/kotlin-stdlib-jdk7-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar:/root/.m2/repository/ch/qos/logback/logback-classic/1.2.10/logback-classic-1.2.10.jar:/root/.m2/repository/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10.jar:/root/.m2/repository/org/awaitility/awaitility/4.0.1/awaitility-4.0.1.jar:/root/.m2/repository/org/hamcrest/hamcrest/2.1/hamcrest-2.1.jar:/root/.m2/repository/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar:/root/.m2/repository/com/google/protobuf/protobuf-java/3.19.2/protobuf-java-3.19.2.jar:/root/.m2/repository/org/postgresql/postgresql/42.3.5/postgresql-42.3.5.jar:/root/.m2/repository/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0.jar:/root/.m2/repository/com/microsoft/sqlserver/mssql-jdbc/9.4.1.jre8/mssql-jdbc-9.4.1.jre8.jar:/root/.m2/repository/org/mongodb/mongodb-driver-sync/4.3.3/mongodb-driver-sync-4.3.3.jar:/root/.m2/repository/org/mongodb/bson/4.3.3/bson-4.3.3.jar:/root/.m2/repository/org/mongodb/mongodb-driver-core/4.3.3/mongodb-driver-core-4.3.3.jar:/root/.m2/repository/com/ibm/db2/jcc/11.5.0.0/jcc-11.5.0.0.jar:/root/.m2/repository/org/testcontainers/testcontainers/1.16.1/testcontainers-1.16.1.jar:/root/.m2/repository/junit/junit/4.13.1/junit-4.13.1.jar:/root/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/root/.m2/repository/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8.jar:/root/.m2/repository/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar:/root/.m2/repository/com/github/docker-java/docker-java-api/3.2.12/docker-java-api-3.2.12.jar:/root/.m2/repository/com/github/docker-java/docker-java-transport-zerodep/3.2.12/docker-java-transport-zerodep-3.2.12.jar:/root/.m2/repository/com/github/docker-java/docker-java-transport/3.2.12/docker-java-transport-3.2.12.jar:/root/.m2/repository/net/java/dev/jna/jna/5.8.0/jna-5.8.0.jar:/root/.m2/repository/org/testcontainers/jdbc/1.16.1/jdbc-1.16.1.jar:/root/.m2/repository/org/testcontainers/database-commons/1.16.1/database-commons-1.16.1.jar:/root/.m2/repository/org/testcontainers/mysql/1.16.1/mysql-1.16.1.jar:/root/.m2/repository/org/testcontainers/mongodb/1.16.1/mongodb-1.16.1.jar:/root/.m2/repository/org/testcontainers/postgresql/1.16.1/postgresql-1.16.1.jar:/root/.m2/repository/org/testcontainers/mssqlserver/1.16.1/mssqlserver-1.16.1.jar:/root/.m2/repository/org/testcontainers/db2/1.16.1/db2-1.16.1.jar:/root/.m2/repository/org/testcontainers/oracle-xe/1.16.1/oracle-xe-1.16.1.jar:"/>
+    <property name="test.apicurio.log.level" value="INFO"/>
+    <property name="java.vm.vendor" value="Red Hat, Inc."/>
+    <property name="ocp.project.mongo" value="debezium-test-mongo"/>
+    <property name="test.strimzi.crd.version" value="v1beta2"/>
+    <property name="user.timezone" value="GMT"/>
+    <property name="test.database.mysql.username" value="mysqluser"/>
+    <property name="java.vm.specification.version" value="17"/>
+    <property name="os.name" value="Linux"/>
+    <property name="ocp.url" value="https://api.cluster.dbz.cechacek.net:6443"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="test.database.postgresql.password" value="debezium"/>
+    <property name="surefire.test.class.path" value="/home/jboss/debezium/debezium-testing/debezium-testing-system/target/test-classes:/home/jboss/debezium/debezium-testing/debezium-testing-system/target/debezium-testing-system-2.0.0-SNAPSHOT.jar:/root/.m2/repository/io/fabric8/openshift-client/5.12.1/openshift-client-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-client/5.12.1/kubernetes-client-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-rbac/5.12.1/kubernetes-model-rbac-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-admissionregistration/5.12.1/kubernetes-model-admissionregistration-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-apps/5.12.1/kubernetes-model-apps-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-autoscaling/5.12.1/kubernetes-model-autoscaling-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-batch/5.12.1/kubernetes-model-batch-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-certificates/5.12.1/kubernetes-model-certificates-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-coordination/5.12.1/kubernetes-model-coordination-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-discovery/5.12.1/kubernetes-model-discovery-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-events/5.12.1/kubernetes-model-events-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-extensions/5.12.1/kubernetes-model-extensions-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-flowcontrol/5.12.1/kubernetes-model-flowcontrol-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-metrics/5.12.1/kubernetes-model-metrics-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-policy/5.12.1/kubernetes-model-policy-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-scheduling/5.12.1/kubernetes-model-scheduling-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-storageclass/5.12.1/kubernetes-model-storageclass-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-node/5.12.1/kubernetes-model-node-5.12.1.jar:/root/.m2/repository/com/fasterxml/jackson/datatype/jackson-datatype-jsr310/2.13.2/jackson-datatype-jsr310-2.13.2.jar:/root/.m2/repository/io/fabric8/zjsonpatch/0.3.0/zjsonpatch-0.3.0.jar:/root/.m2/repository/com/github/mifmif/generex/1.0.2/generex-1.0.2.jar:/root/.m2/repository/dk/brics/automaton/automaton/1.11-8/automaton-1.11-8.jar:/root/.m2/repository/io/fabric8/openshift-model/5.12.1/openshift-model-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-clusterautoscaling/5.12.1/openshift-model-clusterautoscaling-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-operator/5.12.1/openshift-model-operator-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-operatorhub/5.12.1/openshift-model-operatorhub-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-machine/5.12.1/openshift-model-machine-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-whereabouts/5.12.1/openshift-model-whereabouts-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-monitoring/5.12.1/openshift-model-monitoring-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-storageversionmigrator/5.12.1/openshift-model-storageversionmigrator-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-tuned/5.12.1/openshift-model-tuned-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-console/5.12.1/openshift-model-console-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-machineconfig/5.12.1/openshift-model-machineconfig-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-miscellaneous/5.12.1/openshift-model-miscellaneous-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-hive/5.12.1/openshift-model-hive-5.12.1.jar:/root/.m2/repository/io/fabric8/openshift-model-installer/5.12.1/openshift-model-installer-5.12.1.jar:/root/.m2/repository/commons-codec/commons-codec/1.14/commons-codec-1.14.jar:/root/.m2/repository/org/apache/commons/commons-compress/1.21/commons-compress-1.21.jar:/root/.m2/repository/org/apache/kafka/kafka-clients/2.7.0/kafka-clients-2.7.0.jar:/root/.m2/repository/com/github/luben/zstd-jni/1.4.5-6/zstd-jni-1.4.5-6.jar:/root/.m2/repository/org/lz4/lz4-java/1.7.1/lz4-java-1.7.1.jar:/root/.m2/repository/org/xerial/snappy/snappy-java/1.1.7.7/snappy-java-1.1.7.7.jar:/root/.m2/repository/org/slf4j/slf4j-api/1.7.30/slf4j-api-1.7.30.jar:/root/.m2/repository/io/strimzi/api/0.28.0/api-0.28.0.jar:/root/.m2/repository/io/fabric8/kubernetes-model-core/5.12.1/kubernetes-model-core-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-networking/5.12.1/kubernetes-model-networking-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-common/5.12.1/kubernetes-model-common-5.12.1.jar:/root/.m2/repository/io/fabric8/kubernetes-model-apiextensions/5.12.1/kubernetes-model-apiextensions-5.12.1.jar:/root/.m2/repository/com/fasterxml/jackson/dataformat/jackson-dataformat-yaml/2.13.2/jackson-dataformat-yaml-2.13.2.jar:/root/.m2/repository/org/yaml/snakeyaml/1.30/snakeyaml-1.30.jar:/root/.m2/repository/io/vertx/vertx-core/4.2.4/vertx-core-4.2.4.jar:/root/.m2/repository/io/netty/netty-common/4.1.68.Final/netty-common-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-buffer/4.1.68.Final/netty-buffer-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-transport/4.1.68.Final/netty-transport-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-handler/4.1.68.Final/netty-handler-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-codec/4.1.68.Final/netty-codec-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-handler-proxy/4.1.68.Final/netty-handler-proxy-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-codec-socks/4.1.68.Final/netty-codec-socks-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-codec-http/4.1.73.Final/netty-codec-http-4.1.73.Final.jar:/root/.m2/repository/io/netty/netty-codec-http2/4.1.68.Final/netty-codec-http2-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-resolver/4.1.68.Final/netty-resolver-4.1.68.Final.jar:/root/.m2/repository/io/netty/netty-resolver-dns/4.1.73.Final/netty-resolver-dns-4.1.73.Final.jar:/root/.m2/repository/io/netty/netty-codec-dns/4.1.73.Final/netty-codec-dns-4.1.73.Final.jar:/root/.m2/repository/io/apicurio/apicurio-registry-operator-api-model/2.2.0.Final/apicurio-registry-operator-api-model-2.2.0.Final.jar:/root/.m2/repository/org/projectlombok/lombok/1.18.22/lombok-1.18.22.jar:/root/.m2/repository/com/squareup/okhttp3/okhttp/4.8.1/okhttp-4.8.1.jar:/root/.m2/repository/com/squareup/okio/okio/2.7.0/okio-2.7.0.jar:/root/.m2/repository/com/squareup/okhttp3/logging-interceptor/4.8.1/logging-interceptor-4.8.1.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-core/2.13.2/jackson-core-2.13.2.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-databind/2.13.2.2/jackson-databind-2.13.2.2.jar:/root/.m2/repository/com/fasterxml/jackson/core/jackson-annotations/2.13.2/jackson-annotations-2.13.2.jar:/root/.m2/repository/org/junit/jupiter/junit-jupiter/5.7.2/junit-jupiter-5.7.2.jar:/root/.m2/repository/org/junit/jupiter/junit-jupiter-api/5.7.2/junit-jupiter-api-5.7.2.jar:/root/.m2/repository/org/apiguardian/apiguardian-api/1.1.0/apiguardian-api-1.1.0.jar:/root/.m2/repository/org/opentest4j/opentest4j/1.2.0/opentest4j-1.2.0.jar:/root/.m2/repository/org/junit/platform/junit-platform-commons/1.7.2/junit-platform-commons-1.7.2.jar:/root/.m2/repository/org/junit/jupiter/junit-jupiter-params/5.7.2/junit-jupiter-params-5.7.2.jar:/root/.m2/repository/org/junit/jupiter/junit-jupiter-engine/5.7.2/junit-jupiter-engine-5.7.2.jar:/root/.m2/repository/org/junit/platform/junit-platform-engine/1.7.2/junit-platform-engine-1.7.2.jar:/root/.m2/repository/org/assertj/assertj-core/3.11.1/assertj-core-3.11.1.jar:/root/.m2/repository/io/github/jcechace/fixture5/0.1.0/fixture5-0.1.0.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk8/1.6.10/kotlin-stdlib-jdk8-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib/1.6.10/kotlin-stdlib-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-common/1.6.10/kotlin-stdlib-common-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-stdlib-jdk7/1.6.10/kotlin-stdlib-jdk7-1.6.10.jar:/root/.m2/repository/org/jetbrains/kotlin/kotlin-reflect/1.6.10/kotlin-reflect-1.6.10.jar:/root/.m2/repository/ch/qos/logback/logback-classic/1.2.10/logback-classic-1.2.10.jar:/root/.m2/repository/ch/qos/logback/logback-core/1.2.10/logback-core-1.2.10.jar:/root/.m2/repository/org/awaitility/awaitility/4.0.1/awaitility-4.0.1.jar:/root/.m2/repository/org/hamcrest/hamcrest/2.1/hamcrest-2.1.jar:/root/.m2/repository/mysql/mysql-connector-java/8.0.28/mysql-connector-java-8.0.28.jar:/root/.m2/repository/com/google/protobuf/protobuf-java/3.19.2/protobuf-java-3.19.2.jar:/root/.m2/repository/org/postgresql/postgresql/42.3.5/postgresql-42.3.5.jar:/root/.m2/repository/org/checkerframework/checker-qual/3.5.0/checker-qual-3.5.0.jar:/root/.m2/repository/com/microsoft/sqlserver/mssql-jdbc/9.4.1.jre8/mssql-jdbc-9.4.1.jre8.jar:/root/.m2/repository/org/mongodb/mongodb-driver-sync/4.3.3/mongodb-driver-sync-4.3.3.jar:/root/.m2/repository/org/mongodb/bson/4.3.3/bson-4.3.3.jar:/root/.m2/repository/org/mongodb/mongodb-driver-core/4.3.3/mongodb-driver-core-4.3.3.jar:/root/.m2/repository/com/ibm/db2/jcc/11.5.0.0/jcc-11.5.0.0.jar:/root/.m2/repository/org/testcontainers/testcontainers/1.16.1/testcontainers-1.16.1.jar:/root/.m2/repository/junit/junit/4.13.1/junit-4.13.1.jar:/root/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/root/.m2/repository/org/rnorth/duct-tape/duct-tape/1.0.8/duct-tape-1.0.8.jar:/root/.m2/repository/org/jetbrains/annotations/17.0.0/annotations-17.0.0.jar:/root/.m2/repository/com/github/docker-java/docker-java-api/3.2.12/docker-java-api-3.2.12.jar:/root/.m2/repository/com/github/docker-java/docker-java-transport-zerodep/3.2.12/docker-java-transport-zerodep-3.2.12.jar:/root/.m2/repository/com/github/docker-java/docker-java-transport/3.2.12/docker-java-transport-3.2.12.jar:/root/.m2/repository/net/java/dev/jna/jna/5.8.0/jna-5.8.0.jar:/root/.m2/repository/org/testcontainers/jdbc/1.16.1/jdbc-1.16.1.jar:/root/.m2/repository/org/testcontainers/database-commons/1.16.1/database-commons-1.16.1.jar:/root/.m2/repository/org/testcontainers/mysql/1.16.1/mysql-1.16.1.jar:/root/.m2/repository/org/testcontainers/mongodb/1.16.1/mongodb-1.16.1.jar:/root/.m2/repository/org/testcontainers/postgresql/1.16.1/postgresql-1.16.1.jar:/root/.m2/repository/org/testcontainers/mssqlserver/1.16.1/mssqlserver-1.16.1.jar:/root/.m2/repository/org/testcontainers/db2/1.16.1/db2-1.16.1.jar:/root/.m2/repository/org/testcontainers/oracle-xe/1.16.1/oracle-xe-1.16.1.jar:"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="test.ocp.project.db2" value="debezium-test-db2"/>
+    <property name="user.home" value="/root"/>
+    <property name="test.apicurio.crd.version" value="v1"/>
+    <property name="user.language" value="en"/>
+    <property name="test.database.mongo.dbz.password" value="dbz"/>
+    <property name="test.database.db2.port" value="50000"/>
+    <property name="test.as.apicurio.url" value="http://debezium-artifact-server.debezium-test.svc.cluster.local:8080/apicurio-registry-distro-connect-converter-2.2.0.Final.zip"/>
+    <property name="test.database.db2.username" value="db2inst1"/>
+    <property name="test.strimzi.kc.image" value="quay.io/debezium/testing-openshift-connect:kafka-2.7.0-2.0.0-SNAPSHOT"/>
+    <property name="test.as.db2.driver.version" value="11.5.0.0"/>
+    <property name="surefire.real.class.path" value="/home/jboss/debezium/debezium-testing/debezium-testing-system/target/surefire/surefirebooter17246450720562924141.jar"/>
+    <property name="test.database.oracle.dbz.username" value="c##dbzuser"/>
+    <property name="test.database.postgresql.port" value="5432"/>
+    <property name="test.ocp.project.mysql" value="debezium-test-mysql"/>
+    <property name="test.strimzi.kc.build" value="true"/>
+    <property name="path.separator" value=":"/>
+    <property name="test.ocp.project.registry" value="debezium-registry"/>
+    <property name="test.avro.serialisation" value="false"/>
+    <property name="os.version" value="5.16.20-200.fc35.x86_64"/>
+    <property name="test.docker.image.mysql" value="quay.io/debezium/example-mysql:latest"/>
+    <property name="ocp.project.sqlserver" value="debezium-test-sqlserver"/>
+    <property name="java.runtime.name" value="OpenJDK Runtime Environment"/>
+    <property name="test.database.mongo.dbz.dbname" value="inventory"/>
+    <property name="java.vm.name" value="OpenJDK 64-Bit Server VM"/>
+    <property name="test.strimzi.operator.connectors" value="true"/>
+    <property name="ocp.pull.secret.paths" value=""/>
+    <property name="test.database.mongo.username" value="admin"/>
+    <property name="test.database.db2.dbname" value="TESTDB"/>
+    <property name="java.vendor.url.bug" value="https://bugzilla.redhat.com/enter_bug.cgi?product=Red%20Hat%20Enterprise%20Linux%208&amp;component=java-17-openjdk"/>
+    <property name="test.database.db2.cdc.schema" value="ASNCDC"/>
+    <property name="test.docker.image.oracle" value="quay.io/rh_integration/dbz-oracle:19.3.0"/>
+    <property name="user.dir" value="/home/jboss/debezium/debezium-testing/debezium-testing-system"/>
+    <property name="os.arch" value="amd64"/>
+    <property name="test.as.oracle.driver.version" value="21.1.0.0"/>
+    <property name="groups" value="mysql &amp; !avro &amp; !docker"/>
+    <property name="java.vm.info" value="mixed mode, sharing"/>
+    <property name="test.database.mongo.password" value="admin"/>
+    <property name="java.vm.version" value="17.0.3+6-LTS"/>
+    <property name="test.database.mongo.dbz.login.dbname" value="admin"/>
+    <property name="java.class.version" value="61.0"/>
+  </properties>
+  <testcase name="" classname="io.debezium.testing.system.tests.mysql.OcpMySqlConnectorIT" time="335.706">
+    <error message="Error while setting up fixture of type class io.debezium.testing.system.fixtures.kafka.OcpKafka" type="fixture5.exceptions.FixtureException"><![CDATA[fixture5.exceptions.FixtureException: Error while setting up fixture of type class io.debezium.testing.system.fixtures.kafka.OcpKafka
+	at fixture5.annotations.FixtureProcessor.setupFixture(processors.kt:76)
+	at fixture5.annotations.FixtureProcessor.access$setupFixture(processors.kt:38)
+	at fixture5.annotations.FixtureProcessor$fixtureObjects$2.invoke(processors.kt:42)
+	at fixture5.annotations.FixtureProcessor$fixtureObjects$2.invoke(processors.kt:42)
+	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:74)
+	at fixture5.annotations.FixtureProcessor.getFixtureObjects(processors.kt:42)
+	at fixture5.annotations.FixtureProcessor.setupFixtures(processors.kt:50)
+	at fixture5.annotations.ProcessorsKt.fixturesOf(processors.kt:26)
+	at fixture5.FixtureExtension.beforeAll(FixtureExtension.kt:30)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeBeforeAllCallbacks$8(ClassBasedTestDescriptor.java:368)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeBeforeAllCallbacks(ClassBasedTestDescriptor.java:368)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.before(ClassBasedTestDescriptor.java:192)
+	at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.before(ClassBasedTestDescriptor.java:78)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:136)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:129)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:127)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:126)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:84)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.invokeAll(SameThreadHierarchicalTestExecutorService.java:38)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$5(NodeTestTask.java:143)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:129)
+	at org.junit.platform.engine.support.hierarchical.Node.around(Node.java:137)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$8(NodeTestTask.java:127)
+	at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.executeRecursively(NodeTestTask.java:126)
+	at org.junit.platform.engine.support.hierarchical.NodeTestTask.execute(NodeTestTask.java:84)
+	at org.junit.platform.engine.support.hierarchical.SameThreadHierarchicalTestExecutorService.submit(SameThreadHierarchicalTestExecutorService.java:32)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestExecutor.execute(HierarchicalTestExecutor.java:57)
+	at org.junit.platform.engine.support.hierarchical.HierarchicalTestEngine.execute(HierarchicalTestEngine.java:51)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:108)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:88)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.lambda$execute$0(EngineExecutionOrchestrator.java:54)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.withInterceptedStreams(EngineExecutionOrchestrator.java:67)
+	at org.junit.platform.launcher.core.EngineExecutionOrchestrator.execute(EngineExecutionOrchestrator.java:52)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:96)
+	at org.junit.platform.launcher.core.DefaultLauncher.execute(DefaultLauncher.java:75)
+	at org.apache.maven.surefire.junitplatform.LazyLauncher.execute(LazyLauncher.java:55)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.execute(JUnitPlatformProvider.java:223)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invokeAllTests(JUnitPlatformProvider.java:175)
+	at org.apache.maven.surefire.junitplatform.JUnitPlatformProvider.invoke(JUnitPlatformProvider.java:139)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:456)
+	at org.apache.maven.surefire.booter.ForkedBooter.execute(ForkedBooter.java:169)
+	at org.apache.maven.surefire.booter.ForkedBooter.run(ForkedBooter.java:595)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:581)
+	Suppressed: kotlin.UninitializedPropertyAccessException: lateinit property fixtures has not been initialized
+		at fixture5.FixtureExtension.afterAll(FixtureExtension.kt:34)
+		at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllCallbacks$14(ClassBasedTestDescriptor.java:434)
+		at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+		at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.lambda$invokeAfterAllCallbacks$15(ClassBasedTestDescriptor.java:434)
+		at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+		at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.invokeAfterAllCallbacks(ClassBasedTestDescriptor.java:434)
+		at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:216)
+		at org.junit.jupiter.engine.descriptor.ClassBasedTestDescriptor.after(ClassBasedTestDescriptor.java:78)
+		at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$6(NodeTestTask.java:149)
+		at org.junit.platform.engine.support.hierarchical.ThrowableCollector.execute(ThrowableCollector.java:73)
+		at org.junit.platform.engine.support.hierarchical.NodeTestTask.lambda$executeRecursively$7(NodeTestTask.java:149)
+		... 33 more
+Caused by: io.fabric8.kubernetes.client.KubernetesClientTimeoutException: Timed out waiting for [300000] milliseconds for [Kafka] with name:[debezium-kafka-cluster] in namespace [debezium-test].
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.waitUntilCondition(BaseOperation.java:860)
+	at io.fabric8.kubernetes.client.dsl.base.BaseOperation.waitUntilCondition(BaseOperation.java:83)
+	at io.debezium.testing.system.tools.kafka.OcpKafkaController.waitForCluster(OcpKafkaController.java:100)
+	at io.debezium.testing.system.tools.kafka.OcpKafkaDeployer.deploy(OcpKafkaDeployer.java:51)
+	at io.debezium.testing.system.fixtures.kafka.OcpKafka.deployKafkaCluster(OcpKafka.java:76)
+	at io.debezium.testing.system.fixtures.kafka.OcpKafka.setup(OcpKafka.java:59)
+	at fixture5.annotations.FixtureProcessor.setupFixture(processors.kt:70)
+	... 49 more
+]]></error>
+    <system-out><![CDATA[2022-05-17 09:59:42,928 INFO   ||  Setting variable STRIMZI_LOG_LEVEL='DEBUG' on deployment 'strimzi-cluster-operator'   [io.debezium.testing.system.tools.OperatorController]
+2022-05-17 09:59:42,932 INFO   ||  Using 'Always' pull policy for all containers of deployment strimzi-cluster-operator'   [io.debezium.testing.system.tools.OperatorController]
+2022-05-17 09:59:42,932 INFO   ||  Setting variable STRIMZI_IMAGE_PULL_POLICY='Always' on deployment 'strimzi-cluster-operator'   [io.debezium.testing.system.tools.OperatorController]
+2022-05-17 09:59:42,934 INFO   ||  Scaling Operator replicas to 1   [io.debezium.testing.system.tools.OperatorController]
+2022-05-17 10:00:15,472 INFO   ||  Deploying Kafka Cluster   [io.debezium.testing.system.tools.kafka.OcpKafkaDeployer]
+2022-05-17 10:00:15,521 WARN   ||  The client is using resource type 'kafkas' with unstable version 'v1beta2'   [io.fabric8.kubernetes.client.internal.VersionUsageUtils]
+2022-05-17 10:00:15,898 INFO   ||  Waiting for Kafka cluster 'debezium-kafka-cluster'   [io.debezium.testing.system.tools.kafka.OcpKafkaController]
+]]></system-out>
+  </testcase>
+</testsuite>

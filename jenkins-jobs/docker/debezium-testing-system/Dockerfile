@@ -1,26 +1,35 @@
-FROM registry.access.redhat.com/ubi8/openjdk-17
-USER root
-RUN microdnf install git   
-RUN microdnf install unzip
+FROM fedora:35
 
-ARG MAVEN=3.8.4
+ARG repository
+ARG branch
+ARG secret
+ARG sdkman_init="/root/.sdkman/bin/sdkman-init.sh"
+
+RUN dnf -y install git unzip zip findutils
+
+RUN curl -s "https://get.sdkman.io" | bash
+RUN source $sdkman_init &&\
+    sdk install java 17.0.2-open&&\
+    sdk install maven
+
 ARG OCP_CLIENT=3.7.23
 
 RUN curl --retry 7 -Lo /tmp/client-tools.tar.gz "https://mirror.openshift.com/pub/openshift-v3/clients/${OCP_CLIENT}/linux/oc.tar.gz"
-RUN curl --retry 7 -Lo /tmp/maven.tar.gz "https://repo1.maven.org/maven2/org/apache/maven/apache-maven/${MAVEN}/apache-maven-${MAVEN}-bin.tar.gz"
 
-RUN mkdir /opt/maven && tar zxf /tmp/maven.tar.gz -C /opt/maven \
-    && rm /tmp/maven.tar.gz 
 
 RUN tar zxf /tmp/client-tools.tar.gz -C /usr/local/bin oc \
-    && rm /tmp/client-tools.tar.gz 
+    && rm /tmp/client-tools.tar.gz
 
-ENV MAVEN_HOME "/opt/maven/apache-maven-$MAVEN"
-ENV PATH=$MAVEN_HOME/bin:$PATH
-
-RUN microdnf clean all 
 COPY testsuite-deployment.sh /testsuite/testsuite-deployment.sh
 COPY library.sh /testsuite/library.sh
+COPY $secret /testsuite/secret.yml
+
 RUN chmod a+x /testsuite/testsuite-deployment.sh
 
-ENTRYPOINT /testsuite/testsuite-deployment.sh 
+
+RUN git clone --branch $branch $repository /testsuite/debezium
+RUN source $sdkman_init && mvn clean install -DskipTests -DskipITs -f /testsuite/debezium/pom.xml
+#
+#
+##TODO entrypoint = testy
+#ENTRYPOINT bash

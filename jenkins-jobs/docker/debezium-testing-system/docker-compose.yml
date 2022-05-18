@@ -9,7 +9,7 @@ services:
       - "${HOST_LOG_DIR:-./testsuite-log}:/testsuite/logs:rw"
     restart: always
     ports: 
-      - 3306:3306
+      - "3306:3306"
     environment:
       - OCP_PROJECT_DEBEZIUM=debezium-test
       - OCP_PROJECT_MYSQL=debezium-test-mysql
@@ -30,4 +30,4 @@ services:
       - TEST_APICURIO_REGISTRY=false
       - DBZ_CONNECT_IMAGE=
       - OCP_STRIMZI_DOWNSTREAM_URL=http://rcm-guest.app.eng.bos.redhat.com/rcm-guest/staging/amq/AMQ-STREAMS-1.6.2.CR1/amq-streams-1.6.2.CR1-ocp-install-examples.zip
-      - DELETE_PROJECTS=true
+      - DELETE_PROJECTS=false
