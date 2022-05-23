@@ -1,22 +1,6 @@
 #!/bin/bash
 
-create_projects()
-{
-    for project in "$@"
-    do 
-        oc new-project "${project}"
-    done    
-}
-
-delete_projects()
-{
-    for project in "$@"
-    do 
-        oc delete project "${project}"
-    done
-}
-
-clone_repositories()
+clone_strimzi()
 {
     local STRIMZI_REPO="https://github.com/strimzi/strimzi-kafka-operator.git" ;
     local PRODUCT_BUILD=false ;
@@ -40,7 +24,7 @@ clone_repositories()
 
     if [ "${PRODUCT_BUILD}" = false ] ;
     then 
-        git clone "${STRIMZI_REPO}" strimzi && git -C strimzi checkout "${STRIMZI_BRANCH}" || exit 2 ;
+        git clone --branch "${STRIMZI_BRANCH}" "${STRIMZI_REPO}" strimzi && git -C strimzi checkout "${STRIMZI_BRANCH}" || exit 2 ;
     elif [ -z "${STRIMZI_DOWNSTREAM_URL}" ] ;
     then 
         exit 2 ;

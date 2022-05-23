@@ -27,11 +27,8 @@ public class OcpClient extends TestFixture {
 
     @Override
     public void setup() {
+        var x = 20;
         Config cfg = new ConfigBuilder()
-                .withMasterUrl(ConfigProperties.OCP_URL)
-                .withUsername(ConfigProperties.OCP_USERNAME)
-                .withPassword(ConfigProperties.OCP_PASSWORD)
-                .withTrustCerts(true)
                 .build();
 
         client = new DefaultOpenShiftClient(cfg);
