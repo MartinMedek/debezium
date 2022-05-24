@@ -16,10 +16,14 @@ import io.fabric8.openshift.client.OpenShiftClient;
 
 import fixture5.TestFixture;
 import fixture5.annotations.FixtureContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @FixtureContext(provides = { OpenShiftClient.class })
 public class OcpClient extends TestFixture {
     private DefaultOpenShiftClient client;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OcpClient.class);
 
     public OcpClient(@NotNull ExtensionContext.Store store) {
         super(store);
@@ -27,9 +31,18 @@ public class OcpClient extends TestFixture {
 
     @Override
     public void setup() {
-        Config cfg = new ConfigBuilder()
-                .build();
-
+        Config cfg;
+        if (ConfigProperties.OCP_URL == null) {
+            LOGGER.info("OCP credentials not provided, using default config");
+            cfg = new ConfigBuilder().build();
+        } else {
+            cfg = new ConfigBuilder()
+                    .withMasterUrl(ConfigProperties.OCP_URL)
+                    .withUsername(ConfigProperties.OCP_USERNAME)
+                    .withPassword(ConfigProperties.OCP_PASSWORD)
+                    .withTrustCerts(true)
+                    .build();
+        }
         client = new DefaultOpenShiftClient(cfg);
         store(OpenShiftClient.class, client);
     }
