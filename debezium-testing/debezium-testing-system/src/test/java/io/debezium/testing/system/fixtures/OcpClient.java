@@ -27,7 +27,6 @@ public class OcpClient extends TestFixture {
 
     @Override
     public void setup() {
-        var x = 20;
         Config cfg = new ConfigBuilder()
                 .build();
 

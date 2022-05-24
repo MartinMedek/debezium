@@ -3,6 +3,11 @@
 source /root/.sdkman/bin/sdkman-init.sh
 source /testsuite/library.sh
 
+echo "================="
+echo "== test output =="
+echo "================="
+
+
 DEBEZIUM_LOCATION="/testsuite/debezium"
 OCP_PROJECTS="${DEBEZIUM_LOCATION}/jenkins-jobs/scripts/ocp-projects.sh"
 SECRET_PATH=/testsuite/secret.yml
@@ -46,7 +51,7 @@ mvn install -pl debezium-testing/debezium-testing-system -PsystemITs \
                     -Dtest.strimzi.kc.build=${PRODUCT_BUILD} \
                     -Dimage.kc="${DBZ_CONNECT_IMAGE}" \
                     -Dimage.as="${ARTIFACT_SERVER_IMAGE}" \
-                    -Dgroups='!avro & !docker'
+                    -Dgroups="${GROUPS}"
 
 popd || exit 1;
 
