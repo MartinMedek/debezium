@@ -46,7 +46,7 @@ mvn install -pl debezium-testing/debezium-testing-system -PsystemITs \
                     -Dtest.strimzi.kc.build=${PRODUCT_BUILD} \
                     -Dimage.kc="${DBZ_CONNECT_IMAGE}" \
                     -Dimage.as="${ARTIFACT_SERVER_IMAGE}" \
-                    -Dgroups="${GROUPS}"
+                    -Dgroups='!avro & !docker'
 
 popd || exit 1;
 
