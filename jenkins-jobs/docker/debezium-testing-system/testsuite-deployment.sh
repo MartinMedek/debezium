@@ -42,6 +42,7 @@ fi
 mvn install -pl debezium-testing/debezium-testing-system -PsystemITs \
                     -Docp.project.debezium="${OCP_PROJECT_DEBEZIUM}" \
                     -Docp.project.mysql="${OCP_PROJECT_MYSQL}" \
+                    -Docp.project.oracle="${OCP_PROJECT_ORACLE}" \
                     -Docp.project.postgresql="${OCP_PROJECT_POSTGRESQL}" \
                     -Docp.project.sqlserver="${OCP_PROJECT_SQLSERVER}" \
                     -Docp.project.mongo="${OCP_PROJECT_MONGO}" \
@@ -58,6 +59,6 @@ popd || exit 1;
 cp debezium/debezium-testing/debezium-testing-system/target/failsafe-reports/*.xml /testsuite/logs
 
 if [ "${DELETE_PROJECTS}" = true ] ;
-then 
+then
   ${OCP_PROJECTS} --project "${OCP_PROJECT_DEBEZIUM}" --delete
 fi ;

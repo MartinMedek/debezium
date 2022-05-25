@@ -5,6 +5,7 @@
  */
 package io.debezium.testing.system.fixtures;
 
+import io.netty.util.internal.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 
@@ -32,7 +33,9 @@ public class OcpClient extends TestFixture {
     @Override
     public void setup() {
         Config cfg;
-        if (ConfigProperties.OCP_URL == null) {
+        if (StringUtil.isNullOrEmpty(ConfigProperties.OCP_URL)
+                || StringUtil.isNullOrEmpty(ConfigProperties.OCP_USERNAME)
+                || StringUtil.isNullOrEmpty(ConfigProperties.OCP_PASSWORD)) {
             LOGGER.info("OCP credentials not provided, using default config");
             cfg = new ConfigBuilder().build();
         } else {
