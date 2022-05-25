@@ -5,20 +5,20 @@
  */
 package io.debezium.testing.system.fixtures;
 
-import io.netty.util.internal.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import io.debezium.testing.system.tools.ConfigProperties;
 import io.fabric8.kubernetes.client.Config;
 import io.fabric8.kubernetes.client.ConfigBuilder;
 import io.fabric8.openshift.client.DefaultOpenShiftClient;
 import io.fabric8.openshift.client.OpenShiftClient;
+import io.netty.util.internal.StringUtil;
 
 import fixture5.TestFixture;
 import fixture5.annotations.FixtureContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @FixtureContext(provides = { OpenShiftClient.class })
 public class OcpClient extends TestFixture {
@@ -38,7 +38,8 @@ public class OcpClient extends TestFixture {
                 || StringUtil.isNullOrEmpty(ConfigProperties.OCP_PASSWORD)) {
             LOGGER.info("OCP credentials not provided, using default config");
             cfg = new ConfigBuilder().build();
-        } else {
+        }
+        else {
             cfg = new ConfigBuilder()
                     .withMasterUrl(ConfigProperties.OCP_URL)
                     .withUsername(ConfigProperties.OCP_USERNAME)
