@@ -59,7 +59,7 @@ public class OcpMongoController
     }
 
     public MongoDatabaseClient getDatabaseClient(String username, String password) {
-        return getDatabaseClient(username, password, "admin");
+        return getDatabaseClient(username, password, OcpMongoShardedConstants.ADMIN_DB);
     }
 
     public MongoDatabaseClient getDatabaseClient(String username, String password, String authSource) {
