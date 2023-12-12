@@ -97,8 +97,8 @@ public class OcpMongoShardedController extends AbstractOcpDatabaseController<Mon
         shardRange.parallelStream().forEach(s -> {
             try {
                 executeCommandOnComponent("mongo-shard" + s + "r1", getShardInitCommand(s));
-                uploadAndExecuteMongoScript(CREATE_DBZ_USER_SCRIPT_LOCATION, OcpMongoShardedConstants.MONGO_SHARD_DEPLOYMENT_PREFIX + s + "r1",
-                        OcpMongoShardedConstants.MONGO_SHARD_PORT);
+//                uploadAndExecuteMongoScript(CREATE_DBZ_USER_SCRIPT_LOCATION, OcpMongoShardedConstants.MONGO_SHARD_DEPLOYMENT_PREFIX + s + "r1",
+//                        OcpMongoShardedConstants.MONGO_SHARD_PORT);
             }
             catch (InterruptedException e) {
                 throw new RuntimeException(e);
