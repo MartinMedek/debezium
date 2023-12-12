@@ -89,7 +89,7 @@ public class OcpMongoShardedController extends AbstractOcpDatabaseController<Mon
                 "--eval",
                 "rs.initiate({ _id: \"cfgrs\", configsvr: true, members: [{ _id : 0, host : \"mongo-config." + ConfigProperties.OCP_PROJECT_MONGO
                         + ".svc.cluster.local:" + OcpMongoShardedConstants.MONGO_CONFIG_PORT + "\" }]})");
-        uploadAndExecuteMongoScript(CREATE_DBZ_USER_SCRIPT_LOCATION, "mongo-config", OcpMongoShardedConstants.MONGO_CONFIG_PORT);
+//        uploadAndExecuteMongoScript(CREATE_DBZ_USER_SCRIPT_LOCATION, "mongo-config", OcpMongoShardedConstants.MONGO_CONFIG_PORT);
 
         // init shards
         LOGGER.info("Initializing all the shards");
@@ -97,8 +97,8 @@ public class OcpMongoShardedController extends AbstractOcpDatabaseController<Mon
         shardRange.parallelStream().forEach(s -> {
             try {
                 executeCommandOnComponent("mongo-shard" + s + "r1", getShardInitCommand(s));
-//                uploadAndExecuteMongoScript(CREATE_DBZ_USER_SCRIPT_LOCATION, OcpMongoShardedConstants.MONGO_SHARD_DEPLOYMENT_PREFIX + s + "r1",
-//                        OcpMongoShardedConstants.MONGO_SHARD_PORT);
+                uploadAndExecuteMongoScript(CREATE_DBZ_USER_SCRIPT_LOCATION, OcpMongoShardedConstants.MONGO_SHARD_DEPLOYMENT_PREFIX + s + "r1",
+                        OcpMongoShardedConstants.MONGO_SHARD_PORT);
             }
             catch (InterruptedException e) {
                 throw new RuntimeException(e);
