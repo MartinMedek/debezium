@@ -43,6 +43,7 @@ public class OcpMongoShardedReplicaSet implements Startable {
     @Getter
     private String name;
     private final boolean configServer;
+    private final boolean ssl;
     private final int memberCount;
     private boolean authEnabled = false;
     private final String rootUserName;
@@ -58,10 +59,11 @@ public class OcpMongoShardedReplicaSet implements Startable {
     private final Configuration configuration;
 
     @Builder(setterPrefix = "with")
-    public OcpMongoShardedReplicaSet(String name, boolean configServer, int memberCount, String rootUserName, String rootPassword, OpenShiftClient ocp, String project,
+    public OcpMongoShardedReplicaSet(String name, boolean configServer, boolean ssl, int memberCount, String rootUserName, String rootPassword, OpenShiftClient ocp, String project,
                                      String keyFile, int shardNum) {
         this.name = name;
         this.configServer = configServer;
+        this.ssl = ssl;
         this.memberCount = memberCount;
         this.authEnabled = false;
         this.rootUserName = rootUserName;
@@ -127,6 +129,11 @@ public class OcpMongoShardedReplicaSet implements Startable {
         // Add keyfile to deployment
         if (StringUtils.isNotEmpty(keyFile)) {
             members.forEach(m -> MongoShardedUtil.addKeyFileToDeployment(m.getDeployment()));
+        }
+
+        // Add certs and enable ssl on deployment
+        if (ssl) {
+            members.forEach(m -> MongoShardedUtil.addSslCertToDeployment(m.getDeployment()));
         }
 
         // Deploy all members in parallel

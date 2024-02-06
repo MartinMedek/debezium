@@ -108,6 +108,7 @@ public class ConnectorFactories {
                 .put("mongodb.password", ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD)
                 .put("mongodb.connection.string", controller.getPublicDatabaseUrl())
                 .put("mongodb.connection.mode", "sharded")
+                .put("mongodb.ssl.enabled", true)
                 .addOperationRouterForTable("u", "customers");
         return cb;
     }

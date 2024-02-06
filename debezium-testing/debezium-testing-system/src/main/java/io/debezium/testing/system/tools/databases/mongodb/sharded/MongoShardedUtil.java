@@ -27,6 +27,8 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
 public class MongoShardedUtil {
+    private final static String KEYFILE_PATH_IN_CONTAINER = "/data/keyFile";
+    private static final String PEM_PATH_IN_CONTAINER = "/data/pem";
     private static Configuration configuration;
 
     public static Configuration getFreemarkerConfiguration() {
@@ -102,7 +104,7 @@ public class MongoShardedUtil {
                 .getContainers()
                 .get(0)
                 .getCommand()
-                .addAll(List.of("--keyFile", OcpMongoShardedConstants.KEYFILE_PATH_IN_CONTAINER));
+                .addAll(List.of("--keyFile", KEYFILE_PATH_IN_CONTAINER));
         // add keyfile to container volume mounts
         deployment
                 .getSpec()
@@ -114,7 +116,7 @@ public class MongoShardedUtil {
                 .add(new VolumeMountBuilder()
                         .withName("keyfile")
                         .withSubPath(OcpMongoShardedConstants.KEYFILE_PATH_IN_CONFIGMAP)
-                        .withMountPath(OcpMongoShardedConstants.KEYFILE_PATH_IN_CONTAINER)
+                        .withMountPath(KEYFILE_PATH_IN_CONTAINER)
                         .build());
         deployment
                 .getSpec()
@@ -122,9 +124,9 @@ public class MongoShardedUtil {
                 .getSpec()
                 .getVolumes()
                 .add(new VolumeBuilder()
-                        .withName("keyfile") // TODO is this gonna create conflicts?
+                        .withName("keyfile")
                         .withConfigMap(new ConfigMapVolumeSourceBuilder()
-                                .withName("keyfile-configmap")
+                                .withName(OcpMongoShardedConstants.CONFIGMAP_NAME)
                                 .withDefaultMode(0600)
                                 .withItems(new KeyToPathBuilder()
                                         .withKey(OcpMongoShardedConstants.KEYFILE_PATH_IN_CONFIGMAP)
@@ -133,4 +135,45 @@ public class MongoShardedUtil {
                                 .build())
                         .build());
     }
+
+    public static void addSslCertToDeployment(Deployment deployment) {
+        deployment
+                .getSpec()
+                .getTemplate()
+                .getSpec()
+                .getContainers()
+                .get(0)
+                .getCommand()
+                .addAll(List.of("--sslMode", "preferSSL", "--sslPEMKeyFile", PEM_PATH_IN_CONTAINER));
+
+        deployment
+                .getSpec()
+                .getTemplate()
+                .getSpec()
+                .getContainers()
+                .get(0)
+                .getVolumeMounts()
+                .add(new VolumeMountBuilder()
+                        .withName("pem")
+                        .withSubPath("pem")
+                        .withMountPath(PEM_PATH_IN_CONTAINER)
+                        .build());
+        deployment
+                .getSpec()
+                .getTemplate()
+                .getSpec()
+                .getVolumes()
+                .add(new VolumeBuilder()
+                        .withName("pem")
+                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
+                                .withName(OcpMongoShardedConstants.CONFIGMAP_NAME)
+                                .withDefaultMode(0600)
+                                .withItems(new KeyToPathBuilder()
+                                        .withKey("pem")
+                                        .withPath("pem")
+                                        .build())
+                                .build())
+                        .build());
+    }
+
 }

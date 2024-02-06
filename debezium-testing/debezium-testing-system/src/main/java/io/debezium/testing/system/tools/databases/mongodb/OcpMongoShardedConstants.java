@@ -26,6 +26,6 @@ public class OcpMongoShardedConstants {
     public final static String INIT_RS_TEMPLATE = "init-rs.js";
     public final static String CREATE_DBZ_USER_TEMPLATE = "create-dbz-user.js";
     public final static String INSERT_MONGOS_DATA_SCRIPT_LOC = "/database-resources/mongodb/sharded/insert-mongos-data.js";
-    public final static String KEYFILE_PATH_IN_CONTAINER = "/data/keyFile";
     public final static String KEYFILE_PATH_IN_CONFIGMAP = "keyFile";
+    public final static String CONFIGMAP_NAME = "mongo-configmap";
 }

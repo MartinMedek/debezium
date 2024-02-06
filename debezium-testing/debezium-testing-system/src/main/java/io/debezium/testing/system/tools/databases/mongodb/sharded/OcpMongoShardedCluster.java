@@ -10,11 +10,16 @@ import static io.debezium.testing.system.tools.WaitConditions.scaled;
 import static io.debezium.testing.system.tools.databases.mongodb.sharded.MongoShardedUtil.executeMongoShOnPod;
 import static org.awaitility.Awaitility.await;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -56,6 +61,7 @@ public class OcpMongoShardedCluster implements Startable {
     private OcpMongoShardedReplicaSet configServerReplicaSet;
     private OcpMongoShardedNode mongosRouter;
     private boolean isRunning = false;
+    private boolean ssl = true;
 
     @Override
     public void start() {
@@ -63,18 +69,30 @@ public class OcpMongoShardedCluster implements Startable {
             LOGGER.info("Sharded mongo cluster already running, skipping initialization");
             return;
         }
-        // deploy configMap containing keyFile
-        if (StringUtils.isNotEmpty(internalKey)) {
-            ConfigMap configMap = new ConfigMapBuilder()
-                    .withKind("ConfigMap")
-                    .withMetadata(new ObjectMetaBuilder()
-                            .withName("keyfile-configmap")
-                            .withLabels(Map.of("asd", "asd"))
-                            .build())
-                    .withData(Map.of(OcpMongoShardedConstants.KEYFILE_PATH_IN_CONFIGMAP, internalKey))
-                    .build();
-            ocp.configMaps().inNamespace(project).createOrReplace(configMap);
+        String pemContent;
+        try {
+            var path = Paths.get(getClass().getResource("/database-resources/mongodb/sharded/mongodb.pem").toURI());
+            pemContent = new String(Files.readAllBytes(path));
+        } catch (URISyntaxException | IOException | NullPointerException e) {
+            throw new RuntimeException(e);
         }
+
+        // deploy configMap containing keyFile, cert
+        ConfigMap configMap = new ConfigMapBuilder()
+                .withKind("ConfigMap")
+                .withMetadata(new ObjectMetaBuilder()
+                        .withName(OcpMongoShardedConstants.CONFIGMAP_NAME)
+                        .withLabels(Map.of("asd", "asd"))
+                        .build())
+                .withData(new TreeMap<>())
+                .build();
+        if (ssl) {
+            configMap.getData().put("pem", pemContent);
+        }
+        if (StringUtils.isNotEmpty(internalKey)) {
+            configMap.getData().put(OcpMongoShardedConstants.KEYFILE_PATH_IN_CONFIGMAP, internalKey);
+        }
+        ocp.configMaps().inNamespace(project).createOrReplace(configMap);
 
         // deploy mongo components
         deployConfigServers();
@@ -177,6 +195,7 @@ public class OcpMongoShardedCluster implements Startable {
                 .withRootPassword(rootPassword)
                 .withMemberCount(replicaCount)
                 .withKeyFile(internalKey)
+                .withSsl(ssl)
                 .withOcp(ocp)
                 .withProject(project)
                 .build();
@@ -205,6 +224,7 @@ public class OcpMongoShardedCluster implements Startable {
                 .withRootPassword(rootPassword)
                 .withMemberCount(configServerCount)
                 .withKeyFile(internalKey)
+                .withSsl(ssl)
                 .withOcp(ocp)
                 .withProject(project)
                 .build();
@@ -215,7 +235,14 @@ public class OcpMongoShardedCluster implements Startable {
     private void deployMongos() {
         mongosRouter = new OcpMongoShardedNode(OcpMongosModelFactory.mongosDeployment(configServerReplicaSet.getReplicaSetFullName()),
                 OcpMongosModelFactory.mongosService(), null, ocp, project);
-        MongoShardedUtil.addKeyFileToDeployment(mongosRouter.getDeployment());
+        if(StringUtils.isNotEmpty(internalKey)) {
+            MongoShardedUtil.addKeyFileToDeployment(mongosRouter.getDeployment());
+        }
+
+        if(ssl) {
+            MongoShardedUtil.addSslCertToDeployment(mongosRouter.getDeployment());
+        }
+
         LOGGER.info("Deploying mongos");
         mongosRouter.start();
     }
