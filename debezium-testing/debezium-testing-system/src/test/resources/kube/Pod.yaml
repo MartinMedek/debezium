@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: "testsuite"
-  namespace: debezium-testsuite
+  namespace: debezium-mmedek-testsuite
 spec:
   restartPolicy: Never
   volumes:
@@ -11,7 +11,7 @@ spec:
         claimName: testsuite-storage-claim
   containers:
     - name: "dbz-testing-system"
-      image: #IMAGE
+      image: quay.io/mmedek/testsuite:latest
       imagePullPolicy: Always
       ports:
         - containerPort: 9000
@@ -21,12 +21,12 @@ spec:
           name: testsuite-volume
       env:
         - name: TESTSUITE_ARGUMENTS
-          value: -Dtest.prepare.strimzi=true -DskipTests=true -Dtest.strimzi.version.kafka=3.5.0 -Dtest.wait.scale=1 -Dtest.strimzi.kc.build=true -Dtest.ocp.project.debezium=debezium-test -Dimage.as=AS_IMAGE -Dtest.strimzi.operator.channel=stable -Dgroups="!avro&openshift"
+          value: -Ddocker.image.mongo.sharded="quay.io/mmedek/mongo:latest" -Docp.username="debezium" -Dstrimzi.kc.log.level.dbz="WARN" -Docp.password="GreenPanda48" -Docp.url="https://api.mmedek.debezium.app-services-dev.net:6443" -Docp.project.debezium="debezium-mmedek" -Dprepare.strimzi=false -DskipTests=true -Dversion.strimzi.kafka=3.5.0 -Dtest.wait.scale=2 -Dstrimzi.kc.build=true -Dimage.as=quay.io/rh_integration/dbz-artifact-server-upstream:2.5.0-SNAPSHOT  -Dstrimzi.operator.channel=stable -Dgroups="mongo-sharded&!avro&openshift"
         - name: DBZ_GIT_BRANCH
-          value: "main"
+          value: "DBZ-7221-test"
         - name: DBZ_GIT_REPOSITORY
-          value: "https://github.com/debezium/debezium.git"
-        - name: DBZ_OCP_PROJECT_DEBEZIUM
-          value: "debezium"
+          value: "https://github.com/MartinMedek/debezium.git"
+        - name: DBZ_OCP_PROJECT_DEBEZIUM  
+          value: "debezium-mmedek"
         - name: DBZ_SECRET_NAME
-          value: "docker-secret"
+          value: "mmedek-pull-secret"
