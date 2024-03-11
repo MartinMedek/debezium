@@ -9,22 +9,7 @@ import java.util.Map;
 
 import io.debezium.testing.system.tools.ConfigProperties;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.OcpMongoShardedConstants;
-import io.fabric8.kubernetes.api.model.ContainerBuilder;
-import io.fabric8.kubernetes.api.model.ContainerPortBuilder;
-import io.fabric8.kubernetes.api.model.EmptyDirVolumeSource;
-import io.fabric8.kubernetes.api.model.ExecActionBuilder;
-import io.fabric8.kubernetes.api.model.IntOrString;
-import io.fabric8.kubernetes.api.model.LabelSelectorBuilder;
-import io.fabric8.kubernetes.api.model.ObjectMeta;
-import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
-import io.fabric8.kubernetes.api.model.PodSpecBuilder;
-import io.fabric8.kubernetes.api.model.PodTemplateSpecBuilder;
-import io.fabric8.kubernetes.api.model.ProbeBuilder;
-import io.fabric8.kubernetes.api.model.Service;
-import io.fabric8.kubernetes.api.model.ServiceBuilder;
-import io.fabric8.kubernetes.api.model.ServicePortBuilder;
-import io.fabric8.kubernetes.api.model.ServiceSpecBuilder;
-import io.fabric8.kubernetes.api.model.VolumeBuilder;
+import io.fabric8.kubernetes.api.model.*;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 import io.fabric8.kubernetes.api.model.apps.DeploymentBuilder;
 import io.fabric8.kubernetes.api.model.apps.DeploymentSpecBuilder;
@@ -62,11 +47,15 @@ public class OcpConfigServerModelProvider {
                                         .build())
                                 .withSpec(new PodSpecBuilder()
                                         .withVolumes(new VolumeBuilder()
-                                                .withName("volume-" + name)
                                                 .withEmptyDir(new EmptyDirVolumeSource())
+                                                .withName("volume-" + name)
                                                 .build())
                                         .withContainers(new ContainerBuilder()
                                                 .withName("mongo")
+                                                .withVolumeMounts(new VolumeMountBuilder()
+                                                        .withName("volume-" + name)
+                                                        .withMountPath("/data/db")
+                                                        .build())
                                                 .withReadinessProbe(new ProbeBuilder()
                                                         .withExec(new ExecActionBuilder()
                                                                 .withCommand("mongosh", "localhost:" + OcpMongoShardedConstants.MONGO_CONFIG_PORT)

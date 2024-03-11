@@ -229,6 +229,11 @@ public class OcpMongoShardedCluster implements Startable {
         if (useInternalAuth) {
             MongoShardedUtil.addKeyFileToDeployment(mongosRouter.getDeployment());
         }
+
+        if (true) {
+           MongoShardedUtil.addCertificatesToDeployment(mongosRouter.getDeployment());
+        }
+
         LOGGER.info("Deploying mongos");
         mongosRouter.start();
     }

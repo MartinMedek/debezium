@@ -5,20 +5,22 @@
  */
 package io.debezium.testing.system.tools.databases.mongodb.sharded;
 
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import io.debezium.testing.system.tools.OpenShiftUtils;
+import io.debezium.testing.system.tools.databases.mongodb.sharded.componentproviders.OcpShardModelProvider;
+import io.debezium.testing.system.tools.databases.mongodb.sharded.freemarker.CreateUserModel;
+import io.debezium.testing.system.tools.databases.mongodb.sharded.freemarker.FreemarkerConfiguration;
+import io.fabric8.kubernetes.api.model.ConfigMapVolumeSourceBuilder;
+import io.fabric8.kubernetes.api.model.VolumeBuilder;
+import io.fabric8.kubernetes.api.model.VolumeMountBuilder;
+import io.fabric8.kubernetes.api.model.apps.Deployment;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import io.debezium.testing.system.tools.OpenShiftUtils;
-import io.debezium.testing.system.tools.databases.mongodb.sharded.componentproviders.OcpShardModelProvider;
-import io.debezium.testing.system.tools.databases.mongodb.sharded.freemarker.CreateUserModel;
-import io.debezium.testing.system.tools.databases.mongodb.sharded.freemarker.FreemarkerConfiguration;
-import io.fabric8.kubernetes.api.model.apps.Deployment;
-
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
 
 public class MongoShardedUtil {
 
@@ -68,6 +70,107 @@ public class MongoShardedUtil {
                 .getContainers()
                 .get(0)
                 .getCommand()
-                .addAll(List.of("--keyFile", OcpMongoShardedConstants.KEYFILE_PATH_IN_CONTAINER));
+                .addAll(List.of("--clusterAuthMode", "sendKeyFile",
+                        "--keyFile", OcpMongoShardedConstants.KEYFILE_PATH_IN_CONTAINER));
+    }
+
+    public static void addCertificatesToDeployment(Deployment deployment) {
+        // volumes
+        deployment.
+                getSpec()
+                .getTemplate()
+                .getSpec()
+                .getVolumes()
+                .add(new VolumeBuilder()
+                        .withName("server-cert-volume")
+                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
+                                .withName("server-cert")
+                                .build())
+                        .build());
+        deployment.
+                getSpec()
+                .getTemplate()
+                .getSpec()
+                .getVolumes()
+                .add(new VolumeBuilder()
+                        .withName("client-cert-volume")
+                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
+                                .withName("client-cert")
+                                .build())
+                        .build());
+        deployment.
+                getSpec()
+                .getTemplate()
+                .getSpec()
+                .getVolumes()
+                .add(new VolumeBuilder()
+                        .withName("ca-cert-volume")
+                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
+                                .withName("ca-cert")
+                                .build())
+                        .build());
+
+        // volume mounts
+        deployment
+                .getSpec()
+                .getTemplate()
+                .getSpec()
+                .getContainers()
+                .get(0)
+                .getVolumeMounts()
+                .add(new VolumeMountBuilder()
+                        .withName("server-cert-volume")
+                        .withMountPath("/opt/server-cert")
+                        .build());
+        deployment
+                .getSpec()
+                .getTemplate()
+                .getSpec()
+                .getContainers()
+                .get(0)
+                .getVolumeMounts()
+                .add(new VolumeMountBuilder()
+                        .withName("client-cert-volume")
+                        .withMountPath("/opt/client-cert")
+                        .build());
+        deployment
+                .getSpec()
+                .getTemplate()
+                .getSpec()
+                .getContainers()
+                .get(0)
+                .getVolumeMounts()
+                .add(new VolumeMountBuilder()
+                        .withName("ca-cert-volume")
+                        .withMountPath("/opt/ca-cert")
+                        .build());
+
+        // command
+        deployment
+                .getSpec()
+                .getTemplate()
+                .getSpec()
+                .getContainers()
+                .get(0)
+                .getCommand()
+                .addAll(List.of(
+                        "--clusterAuthMode", "x509",
+                        "--tlsMode", "preferTLS",
+                        "--tlsCertificateKeyFile", "/opt/server-cert/server-combined.pem",
+                        "--tlsCAFile", "/opt/ca-cert/ca-cert.pem"));
+//        if (!deployment.getMetadata().getName().equals(OcpMongosModelProvider.DEPLOYMENT_NAME)) {
+//            deployment
+//                    .getSpec()
+//                    .getTemplate()
+//                    .getSpec()
+//                    .getContainers()
+//                    .get(0)
+//                    .getCommand()
+//                    .addAll(List.of(
+//                            "--tlsMode", "preferTLS",
+//                            "--tlsCertificateKeyFile", "/opt/server-cert/server-combined.pem",
+//                            "--tlsCAFile", "/opt/ca-cert/ca-cert.pem"));
+//            --clusterAuthMode x509
+//        }
     }
 }

@@ -21,11 +21,23 @@ spec:
           name: testsuite-volume
       env:
         - name: TESTSUITE_ARGUMENTS
-          value: -Ddocker.image.mongo.sharded="quay.io/mmedek/mongo:latest" -Docp.username="debezium" -Dstrimzi.kc.log.level.dbz="WARN" -Docp.password="GreenPanda48" -Docp.url="https://api.mmedek.debezium.app-services-dev.net:6443" -Docp.project.debezium="debezium-mmedek" -Dprepare.strimzi=false -DskipTests=true -Dversion.strimzi.kafka=3.5.0 -Dtest.wait.scale=2 -Dstrimzi.kc.build=true -Dimage.as=quay.io/rh_integration/dbz-artifact-server-upstream:latest  -Dstrimzi.operator.channel=stable -Dgroups="mongo&!avro&openshift"
+          value: >
+            -Ddatabase.mongo.use.keyfile=false
+            -Docp.username="debezium" 
+            -Dstrimzi.kc.log.level.dbz="WARN" 
+            -Docp.password="GreenPanda48" 
+            -Docp.url="https://api.mmedek.debezium.app-services-dev.net:6443" 
+            -Docp.project.debezium="debezium-mmedek" 
+            -Dprepare.strimzi=false 
+            -DskipTests=true 
+            -Dversion.strimzi.kafka=3.6.0 
+            -Dtest.wait.scale=2 
+            -Dimage.as=quay.io/rh_integration/dbz-artifact-server-downstream:2.5.2.CR1  
+            -Dgroups="mongo-sharded&!avro&openshift"
         - name: DBZ_GIT_BRANCH
           value: "ssl-poc"
         - name: DBZ_GIT_REPOSITORY
-          value: "https://github.com/MartinMedek/debezium.git"
+          value: "https://github.com/martinmedek/debezium.git"
         - name: DBZ_OCP_PROJECT_DEBEZIUM  
           value: "debezium-mmedek"
         - name: DBZ_SECRET_NAME
