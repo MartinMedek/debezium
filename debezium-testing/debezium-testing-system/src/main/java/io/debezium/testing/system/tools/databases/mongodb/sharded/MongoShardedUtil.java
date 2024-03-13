@@ -77,11 +77,11 @@ public class MongoShardedUtil {
                 .getContainers()
                 .get(0)
                 .getCommand()
-                .addAll(List.of("--clusterAuthMode", "sendKeyFile",
+                .addAll(List.of("--clusterAuthMode", "keyFile",
                         "--keyFile", OcpMongoShardedConstants.KEYFILE_PATH_IN_CONTAINER));
     }
 
-    public static void addCertificatesToDeployment(Deployment deployment) {
+    public static void addCertificatesToDeployment(Deployment deployment, String certConfigMap, String certFileName) {
         // volumes
         deployment.
                 getSpec()
@@ -91,7 +91,7 @@ public class MongoShardedUtil {
                 .add(new VolumeBuilder()
                         .withName("server-cert-volume")
                         .withConfigMap(new ConfigMapVolumeSourceBuilder()
-                                .withName("server-cert")
+                                .withName(certConfigMap)
                                 .build())
                         .build());
         deployment.
@@ -163,21 +163,11 @@ public class MongoShardedUtil {
                 .addAll(List.of(
                         "--clusterAuthMode", "x509",
                         "--tlsMode", "preferTLS",
-                        "--tlsCertificateKeyFile", "/opt/server-cert/server-combined.pem",
+                        "--tlsCertificateKeyFile", "/opt/server-cert/" + certFileName,
                         "--tlsCAFile", "/opt/ca-cert/ca-cert.pem"));
-//        if (!deployment.getMetadata().getName().equals(OcpMongosModelProvider.DEPLOYMENT_NAME)) {
-//            deployment
-//                    .getSpec()
-//                    .getTemplate()
-//                    .getSpec()
-//                    .getContainers()
-//                    .get(0)
-//                    .getCommand()
-//                    .addAll(List.of(
-//                            "--tlsMode", "preferTLS",
-//                            "--tlsCertificateKeyFile", "/opt/server-cert/server-combined.pem",
-//                            "--tlsCAFile", "/opt/ca-cert/ca-cert.pem"));
-//            --clusterAuthMode x509
-//        }
+    }
+
+    public static void addCertificatesToDeployment(Deployment deployment) {
+        addCertificatesToDeployment(deployment, "server-cert", "server-combined.pem");
     }
 }

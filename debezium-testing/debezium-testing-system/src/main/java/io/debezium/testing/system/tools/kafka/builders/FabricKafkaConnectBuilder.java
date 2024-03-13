@@ -184,47 +184,47 @@ public class FabricKafkaConnectBuilder extends
     }
 
     public FabricKafkaConnectBuilder withMongoCerts() {
-//        builder
-//                .editSpec()
-//                .editExternalConfiguration()
-//                .withVolumes(
-//                        new ExternalConfigurationVolumeSourceBuilder()
-//                                .withName("keystore")
-//                                .withConfigMap(new ConfigMapVolumeSourceBuilder()
-//                                        .withName("client")
-//                                        .withDefaultMode(0420)
-//                                        .build())
-//                                .build(),
-//                                new ExternalConfigurationVolumeSourceBuilder()
-//                                        .withName("truststore")
-//                                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
-//                                                .withName("server")
-//                                                .withDefaultMode(0420)
-//                                                .build())
-//                                        .build())
-//                .endExternalConfiguration()
-//                .endSpec();
-
-
         builder
                 .editSpec()
                 .withExternalConfiguration(new ExternalConfigurationBuilder()
                         .withVolumes(new ExternalConfigurationVolumeSourceBuilder()
                                         .withName("keystore")
                                         .withConfigMap(new ConfigMapVolumeSourceBuilder()
-                                                .withName("client")
+                                                .withName("keystore")
                                                 .withDefaultMode(0420)
                                                 .build())
                                         .build(),
                                 new ExternalConfigurationVolumeSourceBuilder()
                                         .withName("truststore")
                                         .withConfigMap(new ConfigMapVolumeSourceBuilder()
-                                                .withName("server")
+                                                .withName("truststore")
                                                 .withDefaultMode(0420)
                                                 .build())
                                         .build())
                         .build())
                 .endSpec();
+//        builder
+//                .editSpec()
+//                .editExternalConfiguration()
+//                .addNewVolumeLike(new ExternalConfigurationVolumeSourceBuilder()
+//                        .withName("keystore")
+//                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
+//                                .withName("client")
+//                                .withDefaultMode(0420)
+//                                .build())
+//                        .build())
+//                .endVolume()
+//                .addNewVolumeLike(new ExternalConfigurationVolumeSourceBuilder()
+//                        .withName("truststore")
+//                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
+//                                .withName("server")
+//                                .withDefaultMode(0420)
+//                                .build())
+//                        .build())
+//                .endVolume()
+//                .endExternalConfiguration()
+//                .endSpec();
+
         return self();
     }
 

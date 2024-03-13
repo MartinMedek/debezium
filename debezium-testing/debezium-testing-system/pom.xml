@@ -109,8 +109,8 @@
     <database.mongo.docker.replica.size>1</database.mongo.docker.replica.size>
 
     <!--Mongodb sharded configuration-->
-    <database.mongo.use.keyfile>true</database.mongo.use.keyfile>
-
+    <database.mongo.use.keyfile>false</database.mongo.use.keyfile>
+    <database.mongo.use.tls>false</database.mongo.use.tls>
 
     <!--DB2 configuration -->
     <database.db2.port>50000</database.db2.port>
@@ -562,6 +562,7 @@
 
                 <!--Mongo sharded configuration-->
                 <test.database.mongo.use.keyfile>${database.mongo.use.keyfile}</test.database.mongo.use.keyfile>
+                <test.database.mongo.use.tls>${database.mongo.use.tls}</test.database.mongo.use.tls>
 
                 <!--DB2 configuration-->
                 <test.database.db2.host>${database.db2.host}</test.database.db2.host>

@@ -42,6 +42,7 @@ public class OcpMongoShardedCluster implements Startable {
     private final String rootUserName;
     private final String rootPassword;
     private final boolean useInternalAuth;
+    private final boolean useTsl;
     private final OpenShiftClient ocp;
     private final OpenShiftUtils ocpUtils;
     private final int initialShardCount;
@@ -125,9 +126,9 @@ public class OcpMongoShardedCluster implements Startable {
     /**
      * deploy new shard and initialize it. Requires running initialized sharded mongo cluster
      */
-    public void addShard(@Nullable Map<MongoShardKey, ShardKeyRange> rangeMap) {
+    public void addShard(@Nullable Map<MongoShardKey, ShardKeyRange> rangeMap, @Nullable String certificateConfigMap, @Nullable String certificateFileName) {
         int shardNum = shardReplicaSets.size();
-        var rs = deployNewShard(shardNum);
+        var rs = deployNewShard(shardNum, certificateConfigMap, certificateFileName);
         registerShardInMongos(rangeMap, rs);
     }
 
@@ -156,7 +157,7 @@ public class OcpMongoShardedCluster implements Startable {
      * @return captured outputs of command execution
      */
     public OpenShiftUtils.CommandOutputs executeMongoSh(String command) {
-        return executeMongoShOnPod(ocpUtils, project, mongosRouter.getDeployment(), getConnectionString(), command, false);
+        return executeMongoShOnPod(ocpUtils, project, mongosRouter.getDeployment(), getConnectionString(), command, true);
     }
 
     public List<MongoShardKey> getShardKeys() {
@@ -172,13 +173,13 @@ public class OcpMongoShardedCluster implements Startable {
     }
 
     private void deployShards() {
-        MongoShardedUtil.intRange(initialShardCount).parallelStream().forEach(this::deployNewShard);
+        MongoShardedUtil.intRange(initialShardCount).parallelStream().forEach(m -> deployNewShard(m, null, null));
     }
 
     /**
      * deploy new shard, initialize replica set and set authentication if specified
      */
-    private OcpMongoReplicaSet deployNewShard(int shardNum) {
+    private OcpMongoReplicaSet deployNewShard(int shardNum, String certificateConfigMap, String certificateFileName) {
         LOGGER.info("Deploying shard number " + shardNum);
         OcpMongoReplicaSet replicaSet = OcpMongoReplicaSet.builder()
                 .withShardNum(shardNum)
@@ -190,6 +191,8 @@ public class OcpMongoShardedCluster implements Startable {
                 .withUseInternalAuth(useInternalAuth)
                 .withOcp(ocp)
                 .withProject(project)
+                .withCertificateFileName(certificateFileName)
+                .withCertificateConfigMap(certificateConfigMap)
                 .build();
         replicaSet.start();
         synchronized (shardReplicaSets) {
@@ -230,7 +233,7 @@ public class OcpMongoShardedCluster implements Startable {
             MongoShardedUtil.addKeyFileToDeployment(mongosRouter.getDeployment());
         }
 
-        if (true) {
+        if (useTsl) {
            MongoShardedUtil.addCertificatesToDeployment(mongosRouter.getDeployment());
         }
 
@@ -279,13 +282,14 @@ public class OcpMongoShardedCluster implements Startable {
     }
 
     public OcpMongoShardedCluster(int initialShardCount, int replicaCount, int configServerCount, @Nullable String rootUserName, @Nullable String rootPassword,
-                                  boolean useInternalAuth, OpenShiftClient ocp, String project, List<MongoShardKey> shardKeys) {
+                                  boolean useInternalAuth, boolean useTsl, OpenShiftClient ocp, String project, List<MongoShardKey> shardKeys) {
         this.initialShardCount = initialShardCount;
         this.replicaCount = replicaCount;
         this.configServerCount = configServerCount;
         this.rootUserName = StringUtils.isNotEmpty(rootUserName) ? rootUserName : ConfigProperties.DATABASE_MONGO_USERNAME;
         this.rootPassword = StringUtils.isNotEmpty(rootPassword) ? rootPassword : ConfigProperties.DATABASE_MONGO_SA_PASSWORD;
         this.useInternalAuth = useInternalAuth;
+        this.useTsl = useTsl;
         this.ocp = ocp;
         this.project = project;
         this.ocpUtils = new OpenShiftUtils(ocp);
@@ -294,6 +298,10 @@ public class OcpMongoShardedCluster implements Startable {
 
     public static OcpMongoShardedClusterBuilder builder() {
         return new OcpMongoShardedClusterBuilder();
+    }
+
+    public boolean getUseTls() {
+        return useTsl;
     }
 
     public static final class OcpMongoShardedClusterBuilder {
@@ -306,6 +314,7 @@ public class OcpMongoShardedCluster implements Startable {
         private int initialShardCount;
         private String project;
         private List<MongoShardKey> shardKeys;
+        private boolean useTsl;
 
         private OcpMongoShardedClusterBuilder() {
         }
@@ -331,6 +340,12 @@ public class OcpMongoShardedCluster implements Startable {
             return this;
         }
 
+        public OcpMongoShardedClusterBuilder withUseTsl(boolean useTsl) {
+            this.useTsl = useTsl;
+            return this;
+        }
+
+
         public OcpMongoShardedClusterBuilder withOcp(OpenShiftClient ocp) {
             this.ocp = ocp;
             return this;
@@ -352,7 +367,7 @@ public class OcpMongoShardedCluster implements Startable {
         }
 
         public OcpMongoShardedCluster build() {
-            return new OcpMongoShardedCluster(initialShardCount, replicaCount, configServerCount, rootUserName, rootPassword, useInternalAuth, ocp, project, shardKeys);
+            return new OcpMongoShardedCluster(initialShardCount, replicaCount, configServerCount, rootUserName, rootPassword, useInternalAuth, useTsl, ocp, project, shardKeys);
         }
     }
 }

@@ -94,7 +94,7 @@ public abstract class ShardedMongoTests extends ConnectorTest {
         // add shard, restart connector, insert to that shard and verify that insert was captured by debezium
         var key = dbController.getMongo().getShardKey("inventory.customers");
         var keyRange = new ShardKeyRange(OcpShardModelProvider.getShardReplicaSetName(3), "1100", "1105");
-        dbController.addShard(Map.of(key, keyRange));
+        dbController.addShard(Map.of(key, keyRange), null, null);
         var sets = dbController.getMongo().getShardReplicaSets();
         sets.get(sets.size() - 1).executeMongosh(
                 MongoShardedUtil.createDebeziumUserCommand(ConfigProperties.DATABASE_MONGO_DBZ_USERNAME, ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD), true);

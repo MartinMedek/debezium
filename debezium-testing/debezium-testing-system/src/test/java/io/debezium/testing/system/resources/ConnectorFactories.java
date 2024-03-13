@@ -105,7 +105,9 @@ public class ConnectorFactories {
                 .put("connector.class", "io.debezium.connector.mongodb.MongoDbConnector")
                 .put("task.max", 1)
 
-                .put("mongodb.user", "CN=client") // TODO ssl on, truststore, keystore
+//                .put("mongodb.user", "CN=clienzzt")
+//                .put("mongodb.password", "unusedPassword")
+
                 .put("mongodb.ssl.enabled", true)
                 .put("mongodb.ssl.keystore", "/opt/kafka/external-configuration/keystore/client.jks")
                 .put("mongodb.ssl.keystore.password", "password")

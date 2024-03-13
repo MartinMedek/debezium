@@ -52,11 +52,17 @@ public class OcpMongoReplicaSet implements Startable {
     private final int shardNum;
     private final List<OcpMongoReplicaSetMember> members;
 
+    private final String certificateConfigMap;
+
+    private final String certificateFileName;
+
     public OcpMongoReplicaSet(String name, boolean configServer, int memberCount, String rootUserName, String rootPassword, OpenShiftClient ocp, String project,
-                              boolean useInternalAuth, int shardNum) {
+                              boolean useInternalAuth, int shardNum, String certificateConfigMap, String certificateFileName) {
         this.name = name;
         this.configServer = configServer;
         this.memberCount = memberCount;
+        this.certificateConfigMap = certificateConfigMap;
+        this.certificateFileName = certificateFileName;
         this.authRequired = false;
         this.rootUserName = rootUserName;
         this.rootPassword = rootPassword;
@@ -227,8 +233,20 @@ public class OcpMongoReplicaSet implements Startable {
         private String project;
         private boolean useInternalAuth;
         private int shardNum;
+        private String certificateConfigMap;
+        private String certificateFileName;
 
         private OcpMongoReplicaSetBuilder() {
+        }
+
+        public OcpMongoReplicaSetBuilder withCertificateConfigMap(String certificateConfigMap) {
+            this.certificateConfigMap = certificateConfigMap;
+            return this;
+        }
+
+        public OcpMongoReplicaSetBuilder withCertificateFileName(String certificateFileName) {
+            this.certificateFileName = certificateFileName;
+            return this;
         }
 
         public OcpMongoReplicaSetBuilder withName(String name) {
@@ -277,7 +295,7 @@ public class OcpMongoReplicaSet implements Startable {
         }
 
         public OcpMongoReplicaSet build() {
-            return new OcpMongoReplicaSet(name, configServer, memberCount, rootUserName, rootPassword, ocp, project, useInternalAuth, shardNum);
+            return new OcpMongoReplicaSet(name, configServer, memberCount, rootUserName, rootPassword, ocp, project, useInternalAuth, shardNum, certificateConfigMap, certificateFileName);
         }
     }
 }
