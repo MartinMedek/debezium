@@ -49,6 +49,13 @@ public class MongoShardedUtil {
         return writer.toString();
     }
 
+    public static String createCertUserCommand(String userName) throws IOException, TemplateException {
+        var writer = new StringWriter();
+        Template template = new FreemarkerConfiguration().getFreemarkerConfiguration().getTemplate(OcpMongoShardedConstants.CREATE_CERT_USER_TEMPLATE);
+        template.process(new CreateUserModel(userName, ""), writer);
+        return writer.toString();
+    }
+
     public static List<MongoShardKey> getTestShardKeys() {
         MongoShardKey customersKey = new MongoShardKey("inventory.customers", "_id", MongoShardKey.ShardingType.RANGED);
         customersKey.getKeyRanges().add(new ShardKeyRange(OcpShardModelProvider.getShardReplicaSetName(1), "1000", "1003"));

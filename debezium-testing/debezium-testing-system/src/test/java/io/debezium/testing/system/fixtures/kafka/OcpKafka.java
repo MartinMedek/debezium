@@ -94,6 +94,7 @@ public class OcpKafka extends TestFixture {
 
         FabricKafkaConnectBuilder builder = FabricKafkaConnectBuilder
                 .base(kafkaController.getLocalBootstrapAddress())
+                .withMongoCerts()
                 .withLoggingFromConfigMap(configMap)
                 .withMetricsFromConfigMap(configMap)
                 .withConnectorResources(STRIMZI_OPERATOR_CONNECTORS)

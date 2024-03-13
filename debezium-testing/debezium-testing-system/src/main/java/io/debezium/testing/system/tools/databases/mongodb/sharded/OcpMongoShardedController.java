@@ -89,7 +89,8 @@ public class OcpMongoShardedController implements MongoDatabaseController {
         try {
             // fill test data, create debezium user
             mongo.executeMongoSh(String.join("\n", Files.readAllLines(insertDataScript)));
-            mongo.executeMongoSh(MongoShardedUtil.createDebeziumUserCommand(ConfigProperties.DATABASE_MONGO_DBZ_USERNAME, ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD));
+//            mongo.executeMongoSh(MongoShardedUtil.createDebeziumUserCommand(ConfigProperties.DATABASE_MONGO_DBZ_USERNAME, ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD));
+            mongo.executeMongoSh(MongoShardedUtil.createCertUserCommand("CN=client"));
         }
         catch (IOException | TemplateException e) {
             throw new RuntimeException(e);

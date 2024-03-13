@@ -104,8 +104,16 @@ public class ConnectorFactories {
                 .put("topic.prefix", connectorName)
                 .put("connector.class", "io.debezium.connector.mongodb.MongoDbConnector")
                 .put("task.max", 1)
-                .put("mongodb.user", ConfigProperties.DATABASE_MONGO_DBZ_USERNAME)
-                .put("mongodb.password", ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD)
+
+                .put("mongodb.user", "CN=client") // TODO ssl on, truststore, keystore
+                .put("mongodb.ssl.enabled", true)
+                .put("mongodb.ssl.keystore", "/opt/kafka/external-configuration/keystore/client.jks")
+                .put("mongodb.ssl.keystore.password", "password")
+                .put("mongodb.ssl.truststore", "/opt/kafka/external-configuration/truststore/server.jks")
+                .put("mongodb.ssl.truststore.password", "password")
+
+//                .put("mongodb.user", ConfigProperties.DATABASE_MONGO_DBZ_USERNAME)
+//                .put("mongodb.password", ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD)
                 .put("mongodb.connection.string", controller.getPublicDatabaseUrl())
                 .put("mongodb.connection.mode", "sharded")
                 .addOperationRouterForTable("u", "customers");

@@ -17,7 +17,7 @@ db.runCommand({
 });
 db = db.getSiblingDB('$external');
 db.runCommand({
-    createUser: 'CN=client',
+    createUser: '${userName}',
     roles: [
         { role: "listDatabases", db: "admin" },
         { role: "readChangeStream", db: "admin" },
