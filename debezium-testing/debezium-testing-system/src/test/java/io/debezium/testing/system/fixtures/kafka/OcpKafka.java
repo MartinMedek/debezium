@@ -7,6 +7,7 @@ package io.debezium.testing.system.fixtures.kafka;
 
 import static io.debezium.testing.system.tools.ConfigProperties.STRIMZI_OPERATOR_CONNECTORS;
 
+import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;
@@ -94,12 +95,15 @@ public class OcpKafka extends TestFixture {
 
         FabricKafkaConnectBuilder builder = FabricKafkaConnectBuilder
                 .base(kafkaController.getLocalBootstrapAddress())
-                .withMongoCerts()
                 .withLoggingFromConfigMap(configMap)
                 .withMetricsFromConfigMap(configMap)
                 .withConnectorResources(STRIMZI_OPERATOR_CONNECTORS)
                 .withBuild(artifactServerController)
                 .withPullSecret(operatorController.getPullSecret());
+        if (ConfigProperties.DATABASE_MONGO_USE_TLS) {
+            OcpMongoCertGenerator.generateMongoTestCerts(ocp);
+            builder.withMongoCerts();
+        }
 
         OcpKafkaConnectDeployer connectDeployer = new OcpKafkaConnectDeployer(
                 project, builder, configMap, operatorController, ocp, new OkHttpClient());

@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,7 +91,7 @@ public class OcpMongoShardedController implements MongoDatabaseController {
             // fill test data, create debezium user
             mongo.executeMongoSh(String.join("\n", Files.readAllLines(insertDataScript)));
             if (mongo.getUseTls()) {
-                mongo.executeMongoSh(MongoShardedUtil.createCertUserCommand("CN=client"));
+                mongo.executeMongoSh(MongoShardedUtil.createCertUserCommand(OcpMongoCertGenerator.CLIENT_SUBJECT));
             } else {
                 mongo.executeMongoSh(MongoShardedUtil.createDebeziumUserCommand(ConfigProperties.DATABASE_MONGO_DBZ_USERNAME, ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD));
             }
@@ -102,7 +103,7 @@ public class OcpMongoShardedController implements MongoDatabaseController {
         mongo.getShardReplicaSets().forEach(rs -> {
             try {
                 if (mongo.getUseTls()) {
-                    rs.executeMongosh(MongoShardedUtil.createCertUserCommand("CN=client"),
+                    rs.executeMongosh(MongoShardedUtil.createCertUserCommand(OcpMongoCertGenerator.CLIENT_SUBJECT),
                             false);
                 } else {
                     rs.executeMongosh(MongoShardedUtil.createDebeziumUserCommand(ConfigProperties.DATABASE_MONGO_DBZ_USERNAME, ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD),

@@ -360,6 +360,7 @@
     </dependency>
 
     <dependency>
+
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
     </dependency>
@@ -420,26 +421,30 @@
       <artifactId>freemarker</artifactId>
       <version>2.3.32</version>
     </dependency>
+
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcpkix-jdk15on</artifactId>
+      <version>1.70</version>
+    </dependency>
   </dependencies>
 
   <profiles>
     <profile>
       <!-- Required to run tests against downstream -->
       <id>product</id>
-
       <properties>
         <as.apicurio.url>${as.url}/service-registry-${as.apicurio.version}-distro-connect-converter.zip</as.apicurio.url>
         <product.build>true</product.build>
       </properties>
     </profile>
+
     <profile>
       <!-- Required to run Oracle tests -->
       <id>oracleITs</id>
-
       <properties>
         <database.oracle>true</database.oracle>
       </properties>
-
       <dependencies>
         <dependency>
           <groupId>com.oracle.database.jdbc</groupId>
@@ -451,7 +456,6 @@
     <profile>
       <!-- Required to run build images with Oracle connector -->
       <id>oracle-image</id>
-
       <dependencies>
         <dependency>
           <groupId>io.debezium</groupId>

@@ -203,28 +203,6 @@ public class FabricKafkaConnectBuilder extends
                                         .build())
                         .build())
                 .endSpec();
-//        builder
-//                .editSpec()
-//                .editExternalConfiguration()
-//                .addNewVolumeLike(new ExternalConfigurationVolumeSourceBuilder()
-//                        .withName("keystore")
-//                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
-//                                .withName("client")
-//                                .withDefaultMode(0420)
-//                                .build())
-//                        .build())
-//                .endVolume()
-//                .addNewVolumeLike(new ExternalConfigurationVolumeSourceBuilder()
-//                        .withName("truststore")
-//                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
-//                                .withName("server")
-//                                .withDefaultMode(0420)
-//                                .build())
-//                        .build())
-//                .endVolume()
-//                .endExternalConfiguration()
-//                .endSpec();
-
         return self();
     }
 
