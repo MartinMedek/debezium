@@ -19,21 +19,31 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.KeyPurposeId;
 import org.bouncycastle.asn1.x509.KeyUsage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
+import java.util.AbstractMap;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.CertificateGenerator.KEYSTORE_PASSWORD;
 
 public class OcpMongoCertGenerator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OcpMongoCertGenerator.class);
+
     private static final String SERVER_SUBJECT = "O=Debezium, CN=mongo-mongos." + ConfigProperties.OCP_PROJECT_MONGO + ".svc.cluster.local";
     public static final String CLIENT_SUBJECT = "CN=client";
 
@@ -47,22 +57,19 @@ public class OcpMongoCertGenerator {
                 .build();
         certificateCreator.generate();
 
-        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_DBZ, keyStoreToString(certificateCreator.getLeafSpec("client").getKeyStore()), "keystore", "client.jks", ocp);
-        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_DBZ, keyStoreToString(certificateCreator.getLeafSpec("server").getKeyStore()), "truststore", "server.jks", ocp);
+//        keyStoreToFile(certificateCreator.getLeafSpec("client").getKeyStore(), "/tmp/keystore.jks");
+//        keyStoreToFile(certificateCreator.getLeafSpec("server").getKeyStore(), "/tmp/truststore.jks");
+//        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_MONGO, Path.of("/tmp/keystore.jks"), "keystore", "keystore.jks", ocp);
+//        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_MONGO, Path.of("/tmp/truststore.jks"), "truststore", "truststore.jks", ocp);
 
-//        keyStoreToFile(certificateCreator.getLeafSpec("client").getKeyStore(), "/tmp/client.jks");
-//        var configMap = new ConfigMapBuilder()
-//                .withMetadata(new ObjectMetaBuilder()
-//                        .withName("keystore")
-//                        .build())
-//                .withData(Map.of("client.jks", data))
-//                .build();
-//        ocp.configMaps().inNamespace(project).createOrReplace(configMap);
+        LOGGER.info("Creating truststore/keystore configmaps for connector");
+        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_DBZ, certificateCreator.getLeafSpec("client").getKeyStore(), "keystore", "client.jks", ocp);
+        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_DBZ, certificateCreator.getLeafSpec("server").getKeyStore(), "truststore", "server.jks", ocp);
 
+        LOGGER.info("Creating certificate configmaps for mongo database");
         pemToConfigMap(ConfigProperties.OCP_PROJECT_MONGO, certificateCreator.exportToPem(certificateCreator.getLeafSpec("client").getCert(), certificateCreator.getCa()), "client-cert", "client-combined.pem", ocp);
         pemToConfigMap(ConfigProperties.OCP_PROJECT_MONGO, certificateCreator.exportToPem(certificateCreator.getLeafSpec("server").getCert(), certificateCreator.getCa()), "server-cert", "server-combined.pem", ocp);
         pemToConfigMap(ConfigProperties.OCP_PROJECT_MONGO, certificateCreator.convertToBase64PEMString(certificateCreator.getCa().getHolder()), "ca-cert", "ca-cert.pem", ocp);
-
     }
 
     private static List<LeafCertSpec> getLeafCertSpecs() {
@@ -82,16 +89,6 @@ public class OcpMongoCertGenerator {
         );
     }
 
-    private static void keystoreToConfigMap(String project, String data, String configMapName, String fileNameInConfigMap, OpenShiftClient ocp) {
-        var configMap = new ConfigMapBuilder()
-                .withMetadata(new ObjectMetaBuilder()
-                        .withName(configMapName)
-                        .build())
-                .withData(Map.of(fileNameInConfigMap, data))
-                .build();
-        ocp.configMaps().inNamespace(project).createOrReplace(configMap);
-    }
-
     private static void pemToConfigMap(String project, String data, String configMapName, String fileNameInConfigMap, OpenShiftClient ocp) {
         var configMap = new ConfigMapBuilder()
                 .withMetadata(new ObjectMetaBuilder()
@@ -102,24 +99,26 @@ public class OcpMongoCertGenerator {
         ocp.configMaps().inNamespace(project).createOrReplace(configMap);
     }
 
-    private static void pemToSecret(String project, String data, String secretName, String secretSubPath, OpenShiftClient ocp) {
-        var secret = new SecretBuilder()
-                .withMetadata(new ObjectMetaBuilder()
-                        .withName(secretName)
-                        .build())
-                .withData(Map.of(secretSubPath, data))
-                .build();
-        ocp.secrets().inNamespace(project).createOrReplace(secret);
-    }
 
-    private static void keyStoreToSecret(String project, String data, String secretName, String secretSubPath, OpenShiftClient ocp) {
-        var secret = new SecretBuilder()
-                .withMetadata(new ObjectMetaBuilder()
-                        .withName(secretName)
-                        .build())
-                .withData(Map.of(secretSubPath, data))
-                .build();
-        ocp.secrets().inNamespace(project).createOrReplace(secret);
+    /*
+    ============================================== KEYSTORE UTILS ======================================================
+     */
+
+
+    private static void keystoreToConfigMap(String project, KeyStore keyStore, String configMapName, String fileNameInConfigMap, OpenShiftClient ocp) throws IOException, CertificateException, KeyStoreException, NoSuchAlgorithmException {
+        char[] pwdArray = KEYSTORE_PASSWORD.toCharArray();
+        try (ByteArrayOutputStream fos = new ByteArrayOutputStream()) {
+            keyStore.store(fos, pwdArray);
+            var configMap = new ConfigMapBuilder()
+                    .withMetadata(new ObjectMetaBuilder()
+                            .withName(configMapName)
+                            .build())
+                    .withBinaryData(Map.of(fileNameInConfigMap, Base64.getEncoder().encodeToString(fos.toByteArray())))
+                    .build();
+            LOGGER.info("creating configmap " + configMapName + " in namespace " + project);
+            ocp.configMaps().inNamespace(project).createOrReplace(configMap);
+
+        }
     }
 
     private static String keyStoreToString(KeyStore keyStore) throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException {
@@ -127,9 +126,8 @@ public class OcpMongoCertGenerator {
         String result;
         try (ByteArrayOutputStream fos = new ByteArrayOutputStream()) {
             keyStore.store(fos, pwdArray);
-            result = fos.toString();
+            return fos.toString(StandardCharsets.US_ASCII);
         }
-        return StringUtils.substring(result, 0, result.length() - 1);
     }
 
     public static void keyStoreToFile(KeyStore keyStore, String filePath) throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException {
@@ -137,6 +135,46 @@ public class OcpMongoCertGenerator {
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
             keyStore.store(fos, pwdArray);
         }
+    }
+
+    private static void keystoreToConfigMap(String project, Path file, String configMapName, String fileNameInConfigMap, OpenShiftClient ocp) throws IOException {
+        var configMapBuilder = new ConfigMapBuilder()
+                .withMetadata(new ObjectMetaBuilder()
+                        .withName(configMapName)
+                        .build());
+        addEntryFromFileToConfigMap(configMapBuilder, fileNameInConfigMap, file);
+        ocp.configMaps().inNamespace(project).createOrReplace(configMapBuilder.build());
+    }
+
+    private static void addEntryFromFileToConfigMap(ConfigMapBuilder configMapBuilder, final String key,
+                                                    final Path file) throws IOException {
+        String entryKey = Optional.ofNullable(key).orElse(file.toFile().getName());
+        Map.Entry<String, String> configMapEntry = createConfigMapEntry(entryKey, file);
+        addEntryToConfigMap(configMapBuilder, configMapEntry, file);
+    }
+
+    private static void addEntryToConfigMap(ConfigMapBuilder configMapBuilder, Map.Entry<String, String> entry,
+                                            final Path file)
+            throws IOException {
+        if (isFileWithBinaryContent(file)) {
+            configMapBuilder.addToBinaryData(entry.getKey(), entry.getValue());
+        } else {
+            configMapBuilder.addToData(entry.getKey(), entry.getValue());
+        }
+    }
+
+    private static Map.Entry<String, String> createConfigMapEntry(final String key, final Path file) throws IOException {
+        final byte[] bytes = Files.readAllBytes(file);
+        if (isFileWithBinaryContent(file)) {
+            final String value = Base64.getEncoder().encodeToString(bytes);
+            return new AbstractMap.SimpleEntry<>(key, value);
+        } else {
+            return new AbstractMap.SimpleEntry<>(key, new String(bytes));
+        }
+    }
+
+    private static boolean isFileWithBinaryContent(Path file) {
+        return false;
     }
 
 

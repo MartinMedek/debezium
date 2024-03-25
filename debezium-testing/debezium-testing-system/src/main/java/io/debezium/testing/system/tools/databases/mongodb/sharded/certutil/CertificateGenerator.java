@@ -50,7 +50,6 @@ import java.util.List;
 
 public class CertificateGenerator {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CertificateGenerator.class);
     public static final String KEYSTORE_PASSWORD = "password";
     private static final String SIGNATURE_ALGORITHM = "SHA384WITHRSA";
     private final X500Name caSubject = new X500Name("c=IN, o=CertificateAuthority, ou=Root_CertificateAuthority, cn=RootCA");
