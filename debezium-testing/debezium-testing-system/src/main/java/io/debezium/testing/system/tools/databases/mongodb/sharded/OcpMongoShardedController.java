@@ -12,7 +12,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
-import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

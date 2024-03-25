@@ -7,7 +7,7 @@ package io.debezium.testing.system.fixtures.kafka;
 
 import static io.debezium.testing.system.tools.ConfigProperties.STRIMZI_OPERATOR_CONNECTORS;
 
-import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
+import io.debezium.testing.system.tools.databases.mongodb.sharded.OcpMongoCertGenerator;
 import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.slf4j.Logger;

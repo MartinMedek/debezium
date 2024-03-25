@@ -8,7 +8,6 @@ package io.debezium.testing.system.tools.databases.mongodb.sharded;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import io.debezium.testing.system.tools.OpenShiftUtils;
-import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.componentproviders.OcpShardModelProvider;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.freemarker.CreateUserModel;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.freemarker.FreemarkerConfiguration;
@@ -99,17 +98,6 @@ public class MongoShardedUtil {
                                 .withName(OcpMongoCertGenerator.SERVER_CERT_CONFIGMAP)
                                 .build())
                         .build());
-//        deployment.
-//                getSpec()
-//                .getTemplate()
-//                .getSpec()
-//                .getVolumes()
-//                .add(new VolumeBuilder()
-//                        .withName("client-cert-volume")
-//                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
-//                                .withName("client-cert")
-//                                .build())
-//                        .build());
         deployment.
                 getSpec()
                 .getTemplate()
@@ -134,17 +122,6 @@ public class MongoShardedUtil {
                         .withName(serverCertVolume)
                         .withMountPath(volumeMountRootPath + OcpMongoCertGenerator.SERVER_CERT_CONFIGMAP)
                         .build());
-//        deployment
-//                .getSpec()
-//                .getTemplate()
-//                .getSpec()
-//                .getContainers()
-//                .get(0)
-//                .getVolumeMounts()
-//                .add(new VolumeMountBuilder()
-//                        .withName("client-cert-volume")
-//                        .withMountPath("/opt/client-cert")
-//                        .build());
         deployment
                 .getSpec()
                 .getTemplate()
