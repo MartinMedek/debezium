@@ -5,12 +5,8 @@
  */
 package io.debezium.testing.system.tools.databases.mongodb.sharded;
 
-import java.io.IOException;
-import java.io.StringWriter;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import io.debezium.testing.system.tools.OpenShiftUtils;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.componentproviders.OcpShardModelProvider;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.freemarker.CreateUserModel;
@@ -20,8 +16,11 @@ import io.fabric8.kubernetes.api.model.VolumeBuilder;
 import io.fabric8.kubernetes.api.model.VolumeMountBuilder;
 import io.fabric8.kubernetes.api.model.apps.Deployment;
 
-import freemarker.template.Template;
-import freemarker.template.TemplateException;
+import java.io.IOException;
+import java.io.StringWriter;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class MongoShardedUtil {
 
@@ -84,7 +83,8 @@ public class MongoShardedUtil {
 
     public static void addCertificatesToDeployment(Deployment deployment, String certConfigMap, String certFileName) {
         // volumes
-        deployment.getSpec()
+        deployment.
+                getSpec()
                 .getTemplate()
                 .getSpec()
                 .getVolumes()
@@ -94,7 +94,8 @@ public class MongoShardedUtil {
                                 .withName(certConfigMap)
                                 .build())
                         .build());
-        deployment.getSpec()
+        deployment.
+                getSpec()
                 .getTemplate()
                 .getSpec()
                 .getVolumes()
@@ -104,7 +105,8 @@ public class MongoShardedUtil {
                                 .withName("client-cert")
                                 .build())
                         .build());
-        deployment.getSpec()
+        deployment.
+                getSpec()
                 .getTemplate()
                 .getSpec()
                 .getVolumes()

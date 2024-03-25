@@ -108,9 +108,7 @@ public class OcpKafkaController implements KafkaController {
 
     @Override
     public boolean undeploy() {
-        // TODO !!!!!
-        ocp.resource(kafka).delete();
-        return true;
+        return Crds.kafkaOperation(ocp).delete(kafka);
     }
 
     @Override

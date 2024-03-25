@@ -5,6 +5,25 @@
  */
 package io.debezium.testing.system.tools.databases.mongodb.sharded.certutil;
 
+import io.fabric8.openshift.client.OpenShiftClient;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.KeyUsage;
+import org.bouncycastle.cert.CertIOException;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
+import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.bouncycastle.operator.ContentSigner;
+import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,33 +48,13 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.bouncycastle.asn1.x500.X500Name;
-import org.bouncycastle.asn1.x509.BasicConstraints;
-import org.bouncycastle.asn1.x509.Extension;
-import org.bouncycastle.asn1.x509.KeyUsage;
-import org.bouncycastle.cert.CertIOException;
-import org.bouncycastle.cert.X509CertificateHolder;
-import org.bouncycastle.cert.X509v3CertificateBuilder;
-import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
-import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
-import org.bouncycastle.operator.ContentSigner;
-import org.bouncycastle.operator.OperatorCreationException;
-import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import io.fabric8.openshift.client.OpenShiftClient;
-
 public class CertificateGenerator {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CertificateGenerator.class);
     public static final String KEYSTORE_PASSWORD = "password";
     private static final String SIGNATURE_ALGORITHM = "SHA384WITHRSA";
     private final X500Name caSubject = new X500Name("c=IN, o=CertificateAuthority, ou=Root_CertificateAuthority, cn=RootCA");
-    // private final String targetDirectory = getClass().getResource("/").getPath();
+//    private final String targetDirectory = getClass().getResource("/").getPath();
 
     private final List<LeafCertSpec> leafSpec;
     private final boolean exportPems;
@@ -83,18 +82,16 @@ public class CertificateGenerator {
                 var cert = genLeafCert(ca, l.getSubject(), l.getExtensions());
                 l.setCert(cert);
 
-                // if (exportPems) {
-                // writeCertToFile(exportToPem(cert, ca), targetDirectory + l.getName() + ".pem");
-                // }
+//                if (exportPems) {
+//                    writeCertToFile(exportToPem(cert, ca), targetDirectory + l.getName() + ".pem");
+//                }
                 if (exportKeyStores) {
-                    KeyStore ks = createKeyStore(l.getName(), cert.getKeyPair().getPrivate(),
-                            new X509Certificate[]{ convertHolderToCert(cert.getHolder()), convertHolderToCert(ca.getHolder()) });
+                    KeyStore ks = createKeyStore(l.getName(), cert.getKeyPair().getPrivate(), new X509Certificate[]{ convertHolderToCert(cert.getHolder()), convertHolderToCert(ca.getHolder()) });
                     ks.setCertificateEntry("ca", convertHolderToCert(ca.getHolder()));
-                    // keyStoreToFile(ks, targetDirectory + l.getName() + ".jks");
+//                    keyStoreToFile(ks, targetDirectory + l.getName() + ".jks");
                     l.setKeyStore(ks);
                 }
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
@@ -122,21 +119,20 @@ public class CertificateGenerator {
                 new CertificateExtensionWrapper(Extension.basicConstraints, true, new BasicConstraints(true)),
                 new CertificateExtensionWrapper(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign)),
                 new CertificateExtensionWrapper(Extension.subjectKeyIdentifier, false, subjectKeyIdentifier),
-                new CertificateExtensionWrapper(Extension.authorityKeyIdentifier, false, authorityKeyIdentifier));
+                new CertificateExtensionWrapper(Extension.authorityKeyIdentifier, false, authorityKeyIdentifier)
+        );
         try {
             extensions.forEach(e -> {
                 try {
                     certBuilder.addExtension(e.getIdentifier(), e.isCritical(), e.getValue());
-                }
-                catch (CertIOException ex) {
+                } catch (CertIOException ex) {
                     throw new RuntimeException(ex);
                 }
             });
 
             final ContentSigner signer = new JcaContentSignerBuilder((SIGNATURE_ALGORITHM)).build(keyPair.getPrivate());
             certHolder = certBuilder.build(signer);
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
         writeCertToFile(convertToBase64PEMString(certHolder), "ca-cert.pem");
@@ -149,8 +145,7 @@ public class CertificateGenerator {
                 .build();
     }
 
-    public CertificateWrapper genLeafCert(CertificateWrapper ca, String subject, List<CertificateExtensionWrapper> extensions)
-            throws OperatorCreationException, NoSuchAlgorithmException, CertIOException {
+    public CertificateWrapper genLeafCert(CertificateWrapper ca, String subject, List<CertificateExtensionWrapper> extensions) throws OperatorCreationException, NoSuchAlgorithmException, CertIOException {
         KeyPair keyPair = generateKeyPair();
 
         long notBefore = System.currentTimeMillis();
@@ -166,8 +161,7 @@ public class CertificateGenerator {
         newExtensions.forEach(e -> {
             try {
                 certBuilder.addExtension(e.getIdentifier(), e.isCritical(), e.getValue());
-            }
-            catch (CertIOException ex) {
+            } catch (CertIOException ex) {
                 throw new RuntimeException(ex);
             }
         });
@@ -201,8 +195,7 @@ public class CertificateGenerator {
 
         try {
             Files.write(file.toPath(), data.getBytes());
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -232,9 +225,9 @@ public class CertificateGenerator {
     }
 
     public static String decodeBase64(String string) throws UnsupportedEncodingException {
-        byte[] dst = new byte[]{};
-        Base64.getDecoder().decode(string.getBytes("UTF-8"), dst);
-        return new String(dst);
+            byte[] dst = new byte[]{};
+            Base64.getDecoder().decode(string.getBytes("UTF-8"), dst);
+            return new String(dst);
     }
 
     public String convertToBase64PEMString(PrivateKey privateKey) throws IOException {
@@ -250,8 +243,7 @@ public class CertificateGenerator {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
             keyPairGenerator.initialize(3072, new SecureRandom());
             return keyPairGenerator.generateKeyPair();
-        }
-        catch (GeneralSecurityException var2) {
+        } catch (GeneralSecurityException var2) {
             throw new AssertionError(var2);
         }
     }
@@ -271,6 +263,8 @@ public class CertificateGenerator {
             keyStore.store(fos, pwdArray);
         }
     }
+
+
 
     public static CertificateGeneratorBuilder builder() {
         return new CertificateGeneratorBuilder();

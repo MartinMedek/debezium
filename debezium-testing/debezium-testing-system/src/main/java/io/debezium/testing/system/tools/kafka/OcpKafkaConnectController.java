@@ -6,6 +6,7 @@
 package io.debezium.testing.system.tools.kafka;
 
 import static io.debezium.testing.system.tools.WaitConditions.scaled;
+import static io.strimzi.api.kafka.Crds.kafkaConnectOperation;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
@@ -268,9 +269,7 @@ public class OcpKafkaConnectController implements KafkaConnectController {
      */
     @Override
     public boolean undeploy() {
-        // TODO what to do with this?
-        var result = ocp.resource(kafkaConnect).delete();
-        return result.isEmpty();
+        return kafkaConnectOperation(ocp).delete(kafkaConnect);
     }
 
     @Override

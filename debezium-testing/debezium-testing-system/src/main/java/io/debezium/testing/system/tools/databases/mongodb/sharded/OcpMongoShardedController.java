@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import io.debezium.testing.system.tools.ConfigProperties;
 import io.debezium.testing.system.tools.databases.mongodb.MongoDatabaseClient;
 import io.debezium.testing.system.tools.databases.mongodb.MongoDatabaseController;
-import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.componentproviders.OcpMongosModelProvider;
 import io.fabric8.kubernetes.api.model.Service;
 import io.fabric8.openshift.client.OpenShiftClient;
@@ -40,8 +40,7 @@ public class OcpMongoShardedController implements MongoDatabaseController {
         this.project = project;
         try {
             insertDataScript = Paths.get(getClass().getResource(OcpMongoShardedConstants.INSERT_MONGOS_DATA_SCRIPT_LOC).toURI());
-        }
-        catch (URISyntaxException e) {
+        } catch (URISyntaxException e) {
             throw new RuntimeException(e);
         }
     }
@@ -93,13 +92,10 @@ public class OcpMongoShardedController implements MongoDatabaseController {
             mongo.executeMongoSh(String.join("\n", Files.readAllLines(insertDataScript)));
             if (mongo.getUseTls()) {
                 mongo.executeMongoSh(MongoShardedUtil.createCertUserCommand(OcpMongoCertGenerator.CLIENT_SUBJECT));
+            } else {
+                mongo.executeMongoSh(MongoShardedUtil.createDebeziumUserCommand(ConfigProperties.DATABASE_MONGO_DBZ_USERNAME, ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD));
             }
-            else {
-                mongo.executeMongoSh(
-                        MongoShardedUtil.createDebeziumUserCommand(ConfigProperties.DATABASE_MONGO_DBZ_USERNAME, ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD));
-            }
-        }
-        catch (IOException | TemplateException e) {
+        } catch (IOException | TemplateException e) {
             throw new RuntimeException(e);
         }
 
@@ -109,14 +105,11 @@ public class OcpMongoShardedController implements MongoDatabaseController {
                 if (mongo.getUseTls()) {
                     rs.executeMongosh(MongoShardedUtil.createCertUserCommand(OcpMongoCertGenerator.CLIENT_SUBJECT),
                             false);
-                }
-                else {
-                    rs.executeMongosh(
-                            MongoShardedUtil.createDebeziumUserCommand(ConfigProperties.DATABASE_MONGO_DBZ_USERNAME, ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD),
+                } else {
+                    rs.executeMongosh(MongoShardedUtil.createDebeziumUserCommand(ConfigProperties.DATABASE_MONGO_DBZ_USERNAME, ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD),
                             false);
                 }
-            }
-            catch (IOException | TemplateException e) {
+            } catch (IOException | TemplateException e) {
                 throw new RuntimeException(e);
             }
         });

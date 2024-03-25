@@ -19,6 +19,7 @@ import io.debezium.testing.system.tools.fabric8.FabricBuilderWrapper;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapKeySelector;
 import io.fabric8.kubernetes.api.model.ConfigMapKeySelectorBuilder;
+import io.fabric8.kubernetes.api.model.ConfigMapVolumeSource;
 import io.fabric8.kubernetes.api.model.ConfigMapVolumeSourceBuilder;
 import io.fabric8.kubernetes.api.model.Secret;
 import io.strimzi.api.kafka.model.CertSecretSourceBuilder;
@@ -27,6 +28,7 @@ import io.strimzi.api.kafka.model.ClientTlsBuilder;
 import io.strimzi.api.kafka.model.ContainerEnvVarBuilder;
 import io.strimzi.api.kafka.model.KafkaConnect;
 import io.strimzi.api.kafka.model.KafkaConnectBuilder;
+import io.strimzi.api.kafka.model.connect.ExternalConfiguration;
 import io.strimzi.api.kafka.model.connect.ExternalConfigurationBuilder;
 import io.strimzi.api.kafka.model.connect.ExternalConfigurationVolumeSourceBuilder;
 import io.strimzi.api.kafka.model.connect.build.Plugin;
@@ -186,12 +188,12 @@ public class FabricKafkaConnectBuilder extends
                 .editSpec()
                 .withExternalConfiguration(new ExternalConfigurationBuilder()
                         .withVolumes(new ExternalConfigurationVolumeSourceBuilder()
-                                .withName("keystore")
-                                .withConfigMap(new ConfigMapVolumeSourceBuilder()
                                         .withName("keystore")
-                                        .withDefaultMode(0420)
-                                        .build())
-                                .build(),
+                                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
+                                                .withName("keystore")
+                                                .withDefaultMode(0420)
+                                                .build())
+                                        .build(),
                                 new ExternalConfigurationVolumeSourceBuilder()
                                         .withName("truststore")
                                         .withConfigMap(new ConfigMapVolumeSourceBuilder()
