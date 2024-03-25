@@ -32,7 +32,7 @@ import freemarker.template.TemplateException;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @Tag("acceptance")
-//@Tag("mongo")
+// @Tag("mongo")
 @Tag("openshift")
 @Tag("mongo-sharded")
 @Fixture(OcpClient.class)

@@ -115,7 +115,8 @@ public class ConnectorFactories {
                     .put("mongodb.ssl.keystore.password", CertificateGenerator.KEYSTORE_PASSWORD)
                     .put("mongodb.ssl.truststore", "/opt/kafka/external-configuration/truststore/server.jks")
                     .put("mongodb.ssl.truststore.password", CertificateGenerator.KEYSTORE_PASSWORD);
-        } else {
+        }
+        else {
             cb
                     .put("mongodb.user", ConfigProperties.DATABASE_MONGO_DBZ_USERNAME)
                     .put("mongodb.password", ConfigProperties.DATABASE_MONGO_DBZ_PASSWORD);

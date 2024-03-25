@@ -5,10 +5,10 @@
  */
 package io.debezium.testing.system.tools.databases.mongodb.sharded.certutil;
 
-import org.bouncycastle.cert.X509CertificateHolder;
-
 import java.security.KeyPair;
 import java.util.List;
+
+import org.bouncycastle.cert.X509CertificateHolder;
 
 public class CertificateWrapper {
     private final KeyPair keyPair;

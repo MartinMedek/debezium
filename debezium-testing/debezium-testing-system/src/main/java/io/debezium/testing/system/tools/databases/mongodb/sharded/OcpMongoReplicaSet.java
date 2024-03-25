@@ -295,7 +295,8 @@ public class OcpMongoReplicaSet implements Startable {
         }
 
         public OcpMongoReplicaSet build() {
-            return new OcpMongoReplicaSet(name, configServer, memberCount, rootUserName, rootPassword, ocp, project, useInternalAuth, shardNum, certificateConfigMap, certificateFileName);
+            return new OcpMongoReplicaSet(name, configServer, memberCount, rootUserName, rootPassword, ocp, project, useInternalAuth, shardNum, certificateConfigMap,
+                    certificateFileName);
         }
     }
 }

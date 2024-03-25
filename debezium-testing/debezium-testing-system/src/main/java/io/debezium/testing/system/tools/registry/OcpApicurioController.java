@@ -119,6 +119,8 @@ public class OcpApicurioController implements RegistryController {
 
     @Override
     public boolean undeploy() {
-        return registryOperation().delete(registry);
+        // TODO !!!!!!
+        ocp.resource(registry).delete();
+        return true;
     }
 }
