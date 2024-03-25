@@ -13,7 +13,6 @@ import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
-import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
@@ -26,7 +25,6 @@ import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -34,7 +32,6 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Date;
-import java.util.LinkedList;
 import java.util.List;
 
 public class CertificateGenerator {
@@ -42,15 +39,11 @@ public class CertificateGenerator {
     public static final String KEYSTORE_PASSWORD = "password";
     private static final String SIGNATURE_ALGORITHM = "SHA384WITHRSA";
     private final X500Name caSubject = new X500Name("c=IN, o=CertificateAuthority, ou=Root_CertificateAuthority, cn=RootCA");
-
     private final List<LeafCertSpec> leafSpec;
-    private final boolean exportKeyStores;
-
     private CertificateWrapper ca;
 
-    public CertificateGenerator(List<LeafCertSpec> leafSpec, boolean exportKeyStores) {
+    public CertificateGenerator(List<LeafCertSpec> leafSpec) {
         this.leafSpec = leafSpec;
-        this.exportKeyStores = exportKeyStores;
     }
 
     public void generate() throws Exception {
@@ -61,18 +54,13 @@ public class CertificateGenerator {
             try {
                 var cert = genLeafCert(ca, l.getSubject(), l.getExtensions());
                 l.setCert(cert);
-                if (exportKeyStores) {
-                    KeyStore ks = createKeyStore(l.getName(), cert.getKeyPair().getPrivate(), new X509Certificate[]{ convertHolderToCert(cert.getHolder()), convertHolderToCert(ca.getHolder()) });
-                    ks.setCertificateEntry("ca", convertHolderToCert(ca.getHolder()));
-                    l.setKeyStore(ks);
-                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
-    public CertificateWrapper generateCa() throws NoSuchAlgorithmException, IOException, CertificateException {
+    public CertificateWrapper generateCa() throws IOException {
         Security.addProvider(new BouncyCastleProvider());
         KeyPair keyPair = generateKeyPair();
 
@@ -85,16 +73,11 @@ public class CertificateGenerator {
                 new Date(notAfter),
                 caSubject,
                 keyPair.getPublic());
-        JcaX509ExtensionUtils extUtils = new JcaX509ExtensionUtils();
-        var subjectKeyIdentifier = extUtils.createSubjectKeyIdentifier(keyPair.getPublic());
-        var authorityKeyIdentifier = extUtils.createAuthorityKeyIdentifier(keyPair.getPublic());
 
         X509CertificateHolder certHolder;
         List<CertificateExtensionWrapper> extensions = List.of(
                 new CertificateExtensionWrapper(Extension.basicConstraints, true, new BasicConstraints(true)),
-                new CertificateExtensionWrapper(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign)),
-                new CertificateExtensionWrapper(Extension.subjectKeyIdentifier, false, subjectKeyIdentifier),
-                new CertificateExtensionWrapper(Extension.authorityKeyIdentifier, false, authorityKeyIdentifier)
+                new CertificateExtensionWrapper(Extension.keyUsage, true, new KeyUsage(KeyUsage.keyCertSign))//,
         );
         try {
             extensions.forEach(e -> {
@@ -119,7 +102,7 @@ public class CertificateGenerator {
                 .build();
     }
 
-    public CertificateWrapper genLeafCert(CertificateWrapper ca, String subject, List<CertificateExtensionWrapper> extensions) throws OperatorCreationException, NoSuchAlgorithmException, CertIOException {
+    public CertificateWrapper genLeafCert(CertificateWrapper ca, String subject, List<CertificateExtensionWrapper> extensions) throws OperatorCreationException {
         KeyPair keyPair = generateKeyPair();
 
         long notBefore = System.currentTimeMillis();
@@ -128,11 +111,7 @@ public class CertificateGenerator {
         X509v3CertificateBuilder certBuilder = new JcaX509v3CertificateBuilder(caSubject,
                 new BigInteger(String.valueOf(System.currentTimeMillis())), new Date(notBefore), new Date(notAfter), new X500Name(subject), keyPair.getPublic());
 
-        JcaX509ExtensionUtils extUtils = new JcaX509ExtensionUtils();
-        var newExtensions = new LinkedList<>(extensions);
-        newExtensions.add(new CertificateExtensionWrapper(Extension.subjectKeyIdentifier, false, extUtils.createSubjectKeyIdentifier(keyPair.getPublic())));
-        newExtensions.add(new CertificateExtensionWrapper(Extension.authorityKeyIdentifier, false, extUtils.createAuthorityKeyIdentifier(ca.getKeyPair().getPublic())));
-        newExtensions.forEach(e -> {
+        extensions.forEach(e -> {
             try {
                 certBuilder.addExtension(e.getIdentifier(), e.isCritical(), e.getValue());
             } catch (CertIOException ex) {
@@ -146,13 +125,22 @@ public class CertificateGenerator {
         return CertificateWrapper.builder()
                 .withSubject(subject)
                 .withKeyPair(keyPair)
-                .withExtensions(newExtensions)
+                .withExtensions(extensions)
                 .withHolder(holder)
                 .build();
     }
 
+    public KeyStore generateKeyStore(String leafName) throws Exception {
+        var leaf = getLeafSpec(leafName);
+        return createKeyStore(leaf.getName(), leaf.getCert().getKeyPair().getPrivate(), new X509Certificate[]{ convertHolderToCert(leaf.getCert().getHolder()), convertHolderToCert(ca.getHolder()) });
+    }
+
     public List<LeafCertSpec> getLeafSpec() {
         return leafSpec;
+    }
+
+    public CertificateWrapper getCa() {
+        return ca;
     }
 
     public LeafCertSpec getLeafSpec(String name) {
@@ -162,7 +150,6 @@ public class CertificateGenerator {
         }
         return spec.get();
     }
-
 
     private X509Certificate convertHolderToCert(X509CertificateHolder holder) throws CertificateException {
         JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
@@ -180,7 +167,7 @@ public class CertificateGenerator {
         }
     }
 
-    public static KeyStore createKeyStore(String alias, PrivateKey privateKey, Certificate[] certificates)
+    private static KeyStore createKeyStore(String alias, PrivateKey privateKey, Certificate[] certificates)
             throws Exception {
         final KeyStore keystore = KeyStore.getInstance("JKS");
         keystore.load(null);
@@ -189,35 +176,4 @@ public class CertificateGenerator {
         return keystore;
     }
 
-    public static CertificateGeneratorBuilder builder() {
-        return new CertificateGeneratorBuilder();
-    }
-
-    public CertificateWrapper getCa() {
-        return ca;
-    }
-
-    public static final class CertificateGeneratorBuilder {
-        private List<LeafCertSpec> leafSpec;
-        private boolean exportKeyStores;
-
-        private CertificateGeneratorBuilder() {
-        }
-
-        public CertificateGeneratorBuilder withLeafSpec(List<LeafCertSpec> leafSpec) {
-            this.leafSpec = leafSpec;
-            return this;
-        }
-
-
-        public CertificateGeneratorBuilder withExportKeyStores(boolean exportKeyStores) {
-            this.exportKeyStores = exportKeyStores;
-            return this;
-        }
-
-
-        public CertificateGenerator build() {
-            return new CertificateGenerator(leafSpec, exportKeyStores);
-        }
-    }
 }

@@ -8,10 +8,7 @@ package io.debezium.testing.system.tools.databases.mongodb.sharded.certutil;
 import io.debezium.testing.system.tools.ConfigProperties;
 import io.fabric8.kubernetes.api.model.ConfigMapBuilder;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
-import io.fabric8.kubernetes.api.model.SecretBuilder;
-import io.fabric8.kubernetes.client.utils.KubernetesResourceUtil;
 import io.fabric8.openshift.client.OpenShiftClient;
-import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.DERSequence;
 import org.bouncycastle.asn1.x509.ExtendedKeyUsage;
@@ -27,26 +24,17 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.security.Key;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.AbstractMap;
 import java.util.Base64;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-
-import static io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.CertificateGenerator.KEYSTORE_PASSWORD;
 
 public class OcpMongoCertGenerator {
     private static final Logger LOGGER = LoggerFactory.getLogger(OcpMongoCertGenerator.class);
@@ -72,15 +60,12 @@ public class OcpMongoCertGenerator {
 
     public static void generateMongoTestCerts(OpenShiftClient ocp) throws Exception {
         List<LeafCertSpec> specs = getLeafCertSpecs();
-        var certificateCreator = CertificateGenerator.builder()
-                .withExportKeyStores(true)
-                .withLeafSpec(specs)
-                .build();
+        var certificateCreator = new CertificateGenerator(specs);
         certificateCreator.generate();
 
         LOGGER.info("Creating truststore/keystore configmaps for mongo connector");
-        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_DBZ, certificateCreator.getLeafSpec(CLIENT_CERT_NAME).getKeyStore(), KEYSTORE_CONFIGMAP, KEYSTORE_SUBPATH, ocp);
-        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_DBZ, certificateCreator.getLeafSpec(SERVER_CERT_NAME).getKeyStore(), TRUSTSTORE_CONFIGMAP, TRUSTSTORE_SUBPATH, ocp);
+        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_DBZ, certificateCreator.generateKeyStore(CLIENT_CERT_NAME), KEYSTORE_CONFIGMAP, KEYSTORE_SUBPATH, ocp);
+        keystoreToConfigMap(ConfigProperties.OCP_PROJECT_DBZ, certificateCreator.generateKeyStore(SERVER_CERT_NAME), TRUSTSTORE_CONFIGMAP, TRUSTSTORE_SUBPATH, ocp);
 
         LOGGER.info("Creating certificate configmaps for mongo database");
         pemToConfigMap(ConfigProperties.OCP_PROJECT_MONGO, exportToPem(certificateCreator.getLeafSpec(CLIENT_CERT_NAME).getCert(), certificateCreator.getCa()), CLIENT_CERT_CONFIGMAP, CLIENT_CERT_SUBPATH, ocp);
