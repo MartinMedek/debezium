@@ -11,6 +11,7 @@ import io.debezium.testing.system.tools.ConfigProperties;
 import io.debezium.testing.system.tools.databases.SqlDatabaseController;
 import io.debezium.testing.system.tools.databases.mongodb.MongoDatabaseController;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.CertificateGenerator;
+import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
 import io.debezium.testing.system.tools.kafka.ConnectorConfigBuilder;
 import io.debezium.testing.system.tools.kafka.KafkaController;
 
@@ -111,9 +112,9 @@ public class ConnectorFactories {
         if (ConfigProperties.DATABASE_MONGO_USE_TLS) {
             cb
                     .put("mongodb.ssl.enabled", true)
-                    .put("mongodb.ssl.keystore", "/opt/kafka/external-configuration/keystore/client.jks") // TODO constant
+                    .put("mongodb.ssl.keystore", "/opt/kafka/external-configuration/" + OcpMongoCertGenerator.KEYSTORE_CONFIGMAP + "/" + OcpMongoCertGenerator.KEYSTORE_SUBPATH)
                     .put("mongodb.ssl.keystore.password", CertificateGenerator.KEYSTORE_PASSWORD)
-                    .put("mongodb.ssl.truststore", "/opt/kafka/external-configuration/truststore/server.jks")
+                    .put("mongodb.ssl.truststore", "/opt/kafka/external-configuration/" + OcpMongoCertGenerator.TRUSTSTORE_CONFIGMAP + "/" + OcpMongoCertGenerator.TRUSTSTORE_SUBPATH)
                     .put("mongodb.ssl.truststore.password", CertificateGenerator.KEYSTORE_PASSWORD);
         } else {
             cb

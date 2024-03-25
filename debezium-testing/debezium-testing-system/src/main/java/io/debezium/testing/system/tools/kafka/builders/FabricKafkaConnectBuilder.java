@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import io.debezium.testing.system.tools.ConfigProperties;
 import io.debezium.testing.system.tools.artifacts.OcpArtifactServerController;
+import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
 import io.debezium.testing.system.tools.fabric8.FabricBuilderWrapper;
 import io.fabric8.kubernetes.api.model.ConfigMap;
 import io.fabric8.kubernetes.api.model.ConfigMapKeySelector;
@@ -183,21 +184,25 @@ public class FabricKafkaConnectBuilder extends
 
     }
 
+    /**
+     * Mount truststore and keystore configmaps to external configuration path with same folder names as configmap names
+     * @return
+     */
     public FabricKafkaConnectBuilder withMongoCerts() {
         builder
                 .editSpec()
                 .withExternalConfiguration(new ExternalConfigurationBuilder()
                         .withVolumes(new ExternalConfigurationVolumeSourceBuilder()
-                                        .withName("keystore")
+                                        .withName(OcpMongoCertGenerator.KEYSTORE_CONFIGMAP)
                                         .withConfigMap(new ConfigMapVolumeSourceBuilder()
-                                                .withName("keystore")
+                                                .withName(OcpMongoCertGenerator.KEYSTORE_CONFIGMAP)
                                                 .withDefaultMode(0420)
                                                 .build())
                                         .build(),
                                 new ExternalConfigurationVolumeSourceBuilder()
-                                        .withName("truststore")
+                                        .withName(OcpMongoCertGenerator.TRUSTSTORE_CONFIGMAP)
                                         .withConfigMap(new ConfigMapVolumeSourceBuilder()
-                                                .withName("truststore")
+                                                .withName(OcpMongoCertGenerator.TRUSTSTORE_CONFIGMAP)
                                                 .withDefaultMode(0420)
                                                 .build())
                                         .build())

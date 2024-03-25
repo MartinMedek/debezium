@@ -5,7 +5,6 @@
  */
 package io.debezium.testing.system.tools.databases.mongodb.sharded.certutil;
 
-import io.fabric8.openshift.client.OpenShiftClient;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
@@ -17,25 +16,16 @@ import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
-import java.nio.file.Files;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
@@ -43,7 +33,6 @@ import java.security.Security;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
-import java.util.Base64;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -53,41 +42,28 @@ public class CertificateGenerator {
     public static final String KEYSTORE_PASSWORD = "password";
     private static final String SIGNATURE_ALGORITHM = "SHA384WITHRSA";
     private final X500Name caSubject = new X500Name("c=IN, o=CertificateAuthority, ou=Root_CertificateAuthority, cn=RootCA");
-//    private final String targetDirectory = getClass().getResource("/").getPath();
 
     private final List<LeafCertSpec> leafSpec;
-    private final boolean exportPems;
     private final boolean exportKeyStores;
-    private final OpenShiftClient ocp;
 
     private CertificateWrapper ca;
 
-    public CertificateGenerator(List<LeafCertSpec> leafSpec, boolean exportPems, boolean exportKeyStores, OpenShiftClient ocp) {
+    public CertificateGenerator(List<LeafCertSpec> leafSpec, boolean exportKeyStores) {
         this.leafSpec = leafSpec;
-        this.exportPems = exportPems;
         this.exportKeyStores = exportKeyStores;
-        this.ocp = ocp;
     }
 
     public void generate() throws Exception {
         // generate keys and certificates
         ca = generateCa();
-        if (exportPems) {
-            writeCertToFile(convertToBase64PEMString(ca.getHolder()), "ca-cert.pem");
-        }
 
         leafSpec.forEach(l -> {
             try {
                 var cert = genLeafCert(ca, l.getSubject(), l.getExtensions());
                 l.setCert(cert);
-
-//                if (exportPems) {
-//                    writeCertToFile(exportToPem(cert, ca), targetDirectory + l.getName() + ".pem");
-//                }
                 if (exportKeyStores) {
                     KeyStore ks = createKeyStore(l.getName(), cert.getKeyPair().getPrivate(), new X509Certificate[]{ convertHolderToCert(cert.getHolder()), convertHolderToCert(ca.getHolder()) });
                     ks.setCertificateEntry("ca", convertHolderToCert(ca.getHolder()));
-//                    keyStoreToFile(ks, targetDirectory + l.getName() + ".jks");
                     l.setKeyStore(ks);
                 }
             } catch (Exception e) {
@@ -134,7 +110,6 @@ public class CertificateGenerator {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        writeCertToFile(convertToBase64PEMString(certHolder), "ca-cert.pem");
 
         return CertificateWrapper.builder()
                 .withKeyPair(keyPair)
@@ -188,53 +163,11 @@ public class CertificateGenerator {
         return spec.get();
     }
 
-    private void writeCertToFile(String data, String path) throws IOException {
-        File file = new File(path);
-        file.createNewFile();
-
-        try {
-            Files.write(file.toPath(), data.getBytes());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public String exportToPem(CertificateWrapper cert, CertificateWrapper ca) throws IOException, CertificateException {
-        return convertToBase64PEMString(cert.getKeyPair().getPrivate()) +
-                convertToBase64PEMString(cert.getHolder()) +
-                convertToBase64PEMString(ca.getHolder());
-    }
-
-    public String convertToBase64PEMString(X509CertificateHolder holder) throws CertificateException, IOException {
-        return convertToBase64PEMString(convertHolderToCert(holder));
-    }
 
     private X509Certificate convertHolderToCert(X509CertificateHolder holder) throws CertificateException {
         JcaX509CertificateConverter converter = new JcaX509CertificateConverter();
         converter.setProvider(new BouncyCastleProvider());
         return converter.getCertificate(holder);
-    }
-
-    public String convertToBase64PEMString(X509Certificate x509Cert) throws IOException {
-        StringWriter sw = new StringWriter();
-        try (JcaPEMWriter pw = new JcaPEMWriter(sw)) {
-            pw.writeObject(x509Cert);
-        }
-        return sw.toString();
-    }
-
-    public static String decodeBase64(String string) throws UnsupportedEncodingException {
-            byte[] dst = new byte[]{};
-            Base64.getDecoder().decode(string.getBytes("UTF-8"), dst);
-            return new String(dst);
-    }
-
-    public String convertToBase64PEMString(PrivateKey privateKey) throws IOException {
-        StringWriter sw = new StringWriter();
-        try (JcaPEMWriter pw = new JcaPEMWriter(sw)) {
-            pw.writeObject(privateKey);
-        }
-        return sw.toString();
     }
 
     private KeyPair generateKeyPair() {
@@ -256,15 +189,6 @@ public class CertificateGenerator {
         return keystore;
     }
 
-    public static void keyStoreToFile(KeyStore keyStore, String filePath) throws CertificateException, IOException, NoSuchAlgorithmException, KeyStoreException {
-        char[] pwdArray = KEYSTORE_PASSWORD.toCharArray();
-        try (FileOutputStream fos = new FileOutputStream(filePath)) {
-            keyStore.store(fos, pwdArray);
-        }
-    }
-
-
-
     public static CertificateGeneratorBuilder builder() {
         return new CertificateGeneratorBuilder();
     }
@@ -275,9 +199,7 @@ public class CertificateGenerator {
 
     public static final class CertificateGeneratorBuilder {
         private List<LeafCertSpec> leafSpec;
-        private boolean exportPems;
         private boolean exportKeyStores;
-        private OpenShiftClient ocp;
 
         private CertificateGeneratorBuilder() {
         }
@@ -287,23 +209,15 @@ public class CertificateGenerator {
             return this;
         }
 
-        public CertificateGeneratorBuilder withExportPems(boolean exportPems) {
-            this.exportPems = exportPems;
-            return this;
-        }
 
         public CertificateGeneratorBuilder withExportKeyStores(boolean exportKeyStores) {
             this.exportKeyStores = exportKeyStores;
             return this;
         }
 
-        public CertificateGeneratorBuilder withOcp(OpenShiftClient ocp) {
-            this.ocp = ocp;
-            return this;
-        }
 
         public CertificateGenerator build() {
-            return new CertificateGenerator(leafSpec, exportPems, exportKeyStores, ocp);
+            return new CertificateGenerator(leafSpec, exportKeyStores);
         }
     }
 }

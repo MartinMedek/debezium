@@ -8,6 +8,7 @@ package io.debezium.testing.system.tools.databases.mongodb.sharded;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import io.debezium.testing.system.tools.OpenShiftUtils;
+import io.debezium.testing.system.tools.databases.mongodb.sharded.certutil.OcpMongoCertGenerator;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.componentproviders.OcpShardModelProvider;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.freemarker.CreateUserModel;
 import io.debezium.testing.system.tools.databases.mongodb.sharded.freemarker.FreemarkerConfiguration;
@@ -81,7 +82,11 @@ public class MongoShardedUtil {
                         "--keyFile", OcpMongoShardedConstants.KEYFILE_PATH_IN_CONTAINER));
     }
 
-    public static void addCertificatesToDeployment(Deployment deployment, String certConfigMap, String certFileName) {
+    public static void addCertificatesToDeployment(Deployment deployment) {
+        String caCertVolume = "ca-cert-volume";
+        String serverCertVolume = "server-cert-volume";
+        String volumeMountRootPath = "/opt/";
+
         // volumes
         deployment.
                 getSpec()
@@ -89,31 +94,31 @@ public class MongoShardedUtil {
                 .getSpec()
                 .getVolumes()
                 .add(new VolumeBuilder()
-                        .withName("server-cert-volume")
+                        .withName(serverCertVolume)
                         .withConfigMap(new ConfigMapVolumeSourceBuilder()
-                                .withName(certConfigMap)
+                                .withName(OcpMongoCertGenerator.SERVER_CERT_CONFIGMAP)
                                 .build())
                         .build());
+//        deployment.
+//                getSpec()
+//                .getTemplate()
+//                .getSpec()
+//                .getVolumes()
+//                .add(new VolumeBuilder()
+//                        .withName("client-cert-volume")
+//                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
+//                                .withName("client-cert")
+//                                .build())
+//                        .build());
         deployment.
                 getSpec()
                 .getTemplate()
                 .getSpec()
                 .getVolumes()
                 .add(new VolumeBuilder()
-                        .withName("client-cert-volume")
+                        .withName(caCertVolume)
                         .withConfigMap(new ConfigMapVolumeSourceBuilder()
-                                .withName("client-cert")
-                                .build())
-                        .build());
-        deployment.
-                getSpec()
-                .getTemplate()
-                .getSpec()
-                .getVolumes()
-                .add(new VolumeBuilder()
-                        .withName("ca-cert-volume")
-                        .withConfigMap(new ConfigMapVolumeSourceBuilder()
-                                .withName("ca-cert")
+                                .withName(OcpMongoCertGenerator.CA_CERT_CONFIGMAP)
                                 .build())
                         .build());
 
@@ -126,9 +131,20 @@ public class MongoShardedUtil {
                 .get(0)
                 .getVolumeMounts()
                 .add(new VolumeMountBuilder()
-                        .withName("server-cert-volume")
-                        .withMountPath("/opt/server-cert")
+                        .withName(serverCertVolume)
+                        .withMountPath(volumeMountRootPath + OcpMongoCertGenerator.SERVER_CERT_CONFIGMAP)
                         .build());
+//        deployment
+//                .getSpec()
+//                .getTemplate()
+//                .getSpec()
+//                .getContainers()
+//                .get(0)
+//                .getVolumeMounts()
+//                .add(new VolumeMountBuilder()
+//                        .withName("client-cert-volume")
+//                        .withMountPath("/opt/client-cert")
+//                        .build());
         deployment
                 .getSpec()
                 .getTemplate()
@@ -137,19 +153,8 @@ public class MongoShardedUtil {
                 .get(0)
                 .getVolumeMounts()
                 .add(new VolumeMountBuilder()
-                        .withName("client-cert-volume")
-                        .withMountPath("/opt/client-cert")
-                        .build());
-        deployment
-                .getSpec()
-                .getTemplate()
-                .getSpec()
-                .getContainers()
-                .get(0)
-                .getVolumeMounts()
-                .add(new VolumeMountBuilder()
-                        .withName("ca-cert-volume")
-                        .withMountPath("/opt/ca-cert")
+                        .withName(caCertVolume)
+                        .withMountPath(volumeMountRootPath + OcpMongoCertGenerator.CA_CERT_CONFIGMAP)
                         .build());
 
         // command
@@ -163,11 +168,7 @@ public class MongoShardedUtil {
                 .addAll(List.of(
                         "--clusterAuthMode", "x509",
                         "--tlsMode", "preferTLS",
-                        "--tlsCertificateKeyFile", "/opt/server-cert/" + certFileName,
-                        "--tlsCAFile", "/opt/ca-cert/ca-cert.pem"));
-    }
-
-    public static void addCertificatesToDeployment(Deployment deployment) {
-        addCertificatesToDeployment(deployment, "server-cert", "server-combined.pem");
+                        "--tlsCertificateKeyFile", volumeMountRootPath + OcpMongoCertGenerator.SERVER_CERT_CONFIGMAP + "/" + OcpMongoCertGenerator.SERVER_CERT_SUBPATH,
+                        "--tlsCAFile", volumeMountRootPath + OcpMongoCertGenerator.CA_CERT_CONFIGMAP + "/" + OcpMongoCertGenerator.CA_CERT_SUBPATH));
     }
 }
